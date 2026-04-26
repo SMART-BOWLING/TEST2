@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -150,7 +150,7 @@ header {
   color: #dc143c;
 }
 
-/* ===== ОБЛАСТЬ НАЗВАНИЯ МАНУАЛА - ИКОНКА ОТКРЫТЬ КАРТИНКУ УБРАНА ===== */
+/* ===== ОБЛАСТЬ НАЗВАНИЯ МАНУАЛА ===== */
 .manual-label {
   background:#1f2937;
   color:white;
@@ -172,11 +172,6 @@ header {
   flex: 1;
 }
 
-/* Удалена иконка открытия картинки, теперь просто название */
-.manual-label-left i {
-  display: none; /* Скрываем иконку изображения, чтобы не было лишних элементов */
-}
-
 .manual-label-left:hover {
   background:#2d3a4a;
   border-radius: 4px;
@@ -184,6 +179,11 @@ header {
 
 .manual-label-left:active {
   transform: scale(0.99);
+}
+
+.manual-label-left i {
+  font-size: 14px;
+  opacity: 0.7;
 }
 
 .manual-label-actions {
@@ -237,7 +237,7 @@ header {
   box-shadow:0 0 0 3px #dc143c inset;
 }
 
-/* Стили для рисования точек на картинке - МАРКЕР В 2 РАЗА МЕНЬШЕ ДЛЯ ТЕЛЕФОНА */
+/* Стили для рисования точек на картинке - УЛУЧШЕНО ДЛЯ МОБИЛЬНЫХ */
 .image-points-canvas {
   position: absolute;
   top: 0;
@@ -803,7 +803,6 @@ header {
 
 <script>
 // ========== СИСТЕМА ДОБАВЛЕНИЯ ТОЧЕК ==========
-// УЛУЧШЕНО: маркер уменьшен в 2 раза для мобильных устройств
 let allPoints = {};
 let activePointMode = {};
 
@@ -844,7 +843,7 @@ function deletePointFromManual(manualName, index) {
     }
 }
 
-// ОТРИСОВКА ТОЧЕК - МАРКЕР В 2 РАЗА МЕНЬШЕ ДЛЯ ТЕЛЕФОНОВ
+// УЛУЧШЕННАЯ ОТРИСОВКА ТОЧЕК - ЧЕТКИЕ КРУЖКИ
 function drawPointsOnImage(manualName) {
     const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
     if (!block) return;
@@ -884,19 +883,19 @@ function drawPointsOnImage(manualName) {
         const x = point.x * rect.width;
         const y = point.y * rect.height;
         
-        // РАЗМЕР МАРКЕРА УМЕНЬШЕН В 2 РАЗА ДЛЯ ТЕЛЕФОНОВ
+        // Размер маркера зависит от ширины экрана
         let radius;
         if (rect.width < 500) {
-            radius = 5; // на телефонах 5px вместо 10 (в 2 раза меньше)
+            radius = 10; // телефоны
         } else if (rect.width < 800) {
-            radius = 6; // на планшетах
+            radius = 12; // планшеты
         } else {
-            radius = 7; // на десктопе
+            radius = 14; // десктоп
         }
         
-        // Внешнее свечение полупрозрачное (тоже пропорционально уменьшено)
+        // Внешнее свечение (полупрозрачное)
         ctx.beginPath();
-        ctx.arc(x, y, radius + 1, 0, 2 * Math.PI);
+        ctx.arc(x, y, radius + 2, 0, 2 * Math.PI);
         ctx.fillStyle = 'rgba(220, 20, 60, 0.25)';
         ctx.fill();
         
@@ -906,11 +905,11 @@ function drawPointsOnImage(manualName) {
         ctx.fillStyle = '#dc143c';
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
         
-        // Номер детали (мелкий шрифт)
-        const fontSize = Math.max(8, Math.min(12, radius));
+        // Номер детали
+        const fontSize = Math.max(11, Math.min(16, radius));
         ctx.font = `bold ${fontSize}px "Segoe UI", -apple-system, system-ui`;
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
@@ -1090,19 +1089,331 @@ function setupImageClickHandler(img, manualName, buttonsContainer) {
         img.onload = () => drawPointsOnImage(manualName);
     }
 }
-// ========== ОСТАЛЬНОЙ КОД (без изменений, кроме удаления иконки) ==========
-// ... (весь остальной код после этой функции идентичен оригиналу, кроме рендера шапки)
-// В функции renderSingleManual убрана иконка из leftPart, код остальной корректен
+// ========== КОНЕЦ СИСТЕМЫ ТОЧЕК ==========
+
+// Конфигурация Google Sheets
+const AUTH_SPREADSHEET_ID = '1-yiVdZYa6wJdupTiuiHvI_ht3Vu73RUjyCehZqs2cJ4';
+const AUTH_SHEET_NAME = '1';
+const AUTH_API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
+const API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
+const SPREADSHEET_ID = '1v-R394u6sKzSdvmkh9qsbqhfkNZEi5lIXwo8BdT_lhQ';
+const MANUALS_RANGE = 'MANUALS!A:CC';
+const MANUAL_RANGE = 'MANUAL!A:B';
+const STORE_RANGE = 'STORE!A:D';
+const BB_RANGE = 'BB!A:D';
+const KH_RANGE = 'KH!A:D';
+const SKYMALL_RANGE = 'SKYMALL!A:D';
+const CURRENT_SITE = 'https://smart-bowling.github.io/MANUALS-SMART/';
+
+let currentUser = null;
+let manualsData = [];
+let stockData = {};
+let searchResults = [];
+let currentIndex = 0;
+let isSearchMode = false;
+
+const searchNav = document.getElementById("searchNav");
+const manualContainer = document.getElementById("manualContainer");
+const searchInput = document.getElementById("searchInput");
+const loadingScreen = document.getElementById("loadingScreen");
+const loginSection = document.getElementById("login-section");
+const mainContent = document.getElementById("main-content");
+const userInfo = document.getElementById("user-info");
+
+function openShopSearch() {
+  const partNumber = prompt("Введите номер детали:", "");
+  if (partNumber !== null && partNumber.trim() !== "") {
+    const cleanNumber = partNumber.replace(/-/g, '');
+    const form = document.createElement('form');
+    form.method = 'get';
+    form.action = 'https://shop.bowlingvision.com/catalogue/results.aspx';
+    form.style.display = 'none';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'search';
+    input.value = cleanNumber;
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(() => document.body.removeChild(form), 1000);
+  }
+}
+
+let lastTouchEnd = 0;
+document.addEventListener("touchend", function (event) {
+  const now = new Date().getTime();
+  if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+  lastTouchEnd = now;
+}, false);
+
+function loadSheetsAPI() {
+  return new Promise((resolve, reject) => {
+    gapi.load('client', {
+      callback: () => resolve(),
+      onerror: () => reject('Ошибка загрузки Google API'),
+      timeout: 10000,
+      ontimeout: () => reject('Таймаут загрузки Google API')
+    });
+  });
+}
+
+function handleCredentialResponse(response) {
+  try {
+    const payload = parseJwt(response.credential);
+    currentUser = {
+      email: payload.email.toLowerCase().trim(),
+      name: payload.name,
+      picture: payload.picture
+    };
+    showLoading(true);
+    initAndCheckEmail();
+  } catch (e) {
+    console.error('Ошибка аутентификации:', e);
+    showLoading(false);
+    alert('Ошибка аутентификации');
+  }
+}
+
+function showLoading(show) {
+    const loginDiv = document.getElementById('login-container');
+    if (show) {
+        if (!loginDiv.hasAttribute('data-original')) {
+            loginDiv.setAttribute('data-original', loginDiv.innerHTML);
+        }
+        loginDiv.innerHTML = '<div style="padding: 40px; text-align: center;"><div class="loading-spinner"></div><br><span style="color: #64748b; margin-top: 15px; display: block;">Проверка доступа...</span></div>';
+    } else {
+        if (loginDiv.getAttribute('data-original') && document.getElementById('login-section').style.display !== 'none') {
+            loginDiv.innerHTML = loginDiv.getAttribute('data-original');
+            if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.renderButton(
+                    document.querySelector('.g_id_signin'),
+                    { type: 'standard', shape: 'pill', theme: 'outline', text: 'signin_with', size: 'large', logo_alignment: 'left' }
+                );
+            }
+        }
+    }
+}
+
+async function initAndCheckEmail() {
+  try {
+    await loadSheetsAPI();
+    await gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] });
+    await checkEmailInSheet(currentUser.email);
+  } catch (error) {
+    console.error('Ошибка инициализации:', error);
+    showLoading(false);
+    alert('Ошибка инициализации Google API');
+  }
+}
+
+async function checkEmailInSheet(email) {
+  try {
+    const response = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId: AUTH_SPREADSHEET_ID, range: `${AUTH_SHEET_NAME}!A:Z` });
+    const rows = response.result.values;
+    if (!rows || rows.length === 0) { showLoading(false); alert('Таблица пуста'); return; }
+    let hasAccess = false;
+    for (let i = 0; i < rows.length; i++) {
+      if (!rows[i]?.[0]) continue;
+      const rowEmail = rows[i][0].toLowerCase().trim();
+      if (rowEmail === email) {
+        for (let j = 1; j < rows[i].length; j++) {
+          const siteUrl = rows[i][j]?.trim().split('?')[0].split('#')[0] || '';
+          if (siteUrl === CURRENT_SITE || siteUrl.includes('MANUALS-SMART')) { hasAccess = true; break; }
+        }
+        break;
+      }
+    }
+    if (hasAccess) { loginUser(currentUser); } 
+    else { showLoading(false); alert('Доступ запрещен: Ваш email не найден в таблице или нет прав для этого сайта'); }
+  } catch (error) { console.error('Ошибка доступа к таблице:', error); showLoading(false); alert('Ошибка доступа к таблице'); }
+}
+
+function loginUser(payload) {
+  loginSection.style.display = 'none';
+  mainContent.style.display = 'block';
+  userInfo.style.display = 'flex';
+  document.getElementById('user-pic').src = payload.picture;
+  document.getElementById('user-name').textContent = payload.name;
+  document.getElementById('user-email').textContent = payload.email;
+  localStorage.setItem('userLoggedIn', 'true');
+  localStorage.setItem('userEmail', payload.email.toLowerCase());
+  localStorage.setItem('userName', payload.name);
+  localStorage.setItem('userPic', payload.picture);
+  showLoading(false);
+  loadFromGoogleSheets();
+}
+
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (e) { console.error('Ошибка парсинга JWT:', e); return {}; }
+}
+
+function signOut() {
+  localStorage.clear(); sessionStorage.clear();
+  if (google && google.accounts && google.accounts.id) { google.accounts.id.disableAutoSelect(); }
+  mainContent.style.display = 'none';
+  userInfo.style.display = 'none';
+  loginSection.style.display = 'flex';
+  const loginDiv = document.getElementById('login-container');
+  if (loginDiv.getAttribute('data-original')) {
+    loginDiv.innerHTML = loginDiv.getAttribute('data-original');
+    if (window.google && google.accounts && google.accounts.id) {
+      google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type: 'standard', shape: 'pill', theme: 'outline', text: 'signin_with', size: 'large', logo_alignment: 'left' });
+    }
+  }
+}
+
+async function loadFromGoogleSheets() {
+  try {
+    const manualsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MANUALS_RANGE}?key=${API_KEY}`;
+    const manualsResponse = await fetch(manualsUrl);
+    const manualsData_raw = await manualsResponse.json();
+    const manualUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MANUAL_RANGE}?key=${API_KEY}`;
+    const manualResponse = await fetch(manualUrl);
+    const manualData_raw = await manualResponse.json();
+    await loadStockData();
+    processSheetData(manualsData_raw.values, manualData_raw.values);
+    renderManualGroups();
+    setTimeout(() => { loadingScreen.classList.add('fade-out'); }, 500);
+  } catch (error) {
+    console.error('Ошибка загрузки данных:', error);
+    loadingScreen.classList.add('fade-out');
+    manualContainer.innerHTML = '<div style="padding:20px; text-align:center;">Ошибка загрузки данных. Пожалуйста, обновите страницу.</div>';
+  }
+}
+
+async function loadStockData() {
+  try {
+    const storeUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${STORE_RANGE}?key=${API_KEY}`;
+    const storeResponse = await fetch(storeUrl);
+    const storeData = await storeResponse.json();
+    const bbUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${BB_RANGE}?key=${API_KEY}`;
+    const bbResponse = await fetch(bbUrl);
+    const bbData = await bbResponse.json();
+    const khUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${KH_RANGE}?key=${API_KEY}`;
+    const khResponse = await fetch(khUrl);
+    const khData = await khResponse.json();
+    const skymallUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SKYMALL_RANGE}?key=${API_KEY}`;
+    const skymallResponse = await fetch(skymallUrl);
+    const skymallData = await skymallResponse.json();
+    stockData = {};
+    processStockSheet(storeData.values, 'STORE');
+    processStockSheet(bbData.values, 'BB');
+    processStockSheet(khData.values, 'KH');
+    processStockSheet(skymallData.values, 'SKYMALL');
+  } catch (error) { console.error('Ошибка загрузки данных складов:', error); generateDemoStockData(); }
+}
+
+function processStockSheet(rows, sheetName) {
+  if (!rows || rows.length === 0) return;
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row[0]) continue;
+    const partNumber = row[0].trim();
+    const quantity = parseInt(row[1]) || 0;
+    const imageUrl = row[3] || '';
+    if (!stockData[partNumber]) { stockData[partNumber] = { BB: { quantity: 0, location: '', image: '' }, KH: { quantity: 0, location: '', image: '' }, SKYMALL: { quantity: 0, location: '', image: '' }, STORE: { quantity: 0, location: '', image: '' } }; }
+    stockData[partNumber][sheetName] = { quantity: quantity, location: row[2] || '', image: imageUrl };
+  }
+}
+
+function generateDemoStockData() {
+  const allParts = new Set();
+  manualsData.forEach(manual => { manual.parts.forEach(part => { allParts.add(part); }); });
+  allParts.forEach(part => { stockData[part] = { BB: { quantity: Math.floor(Math.random() * 5), location: 'Склад 1', image: '' }, KH: { quantity: Math.floor(Math.random() * 3), location: 'Склад 2', image: '' }, SKYMALL: { quantity: Math.floor(Math.random() * 4), location: 'Склад 3', image: '' }, STORE: { quantity: Math.floor(Math.random() * 2), location: 'Магазин', image: '' } }; });
+}
+
+function processSheetData(manualsRows, manualRows) {
+  manualsData = [];
+  if (!manualsRows || manualsRows.length === 0) return;
+  for (let i = 1; i < manualsRows.length; i++) {
+    const row = manualsRows[i];
+    if (!row[0]) continue;
+    const parts = [];
+    for (let j = 2; j < row.length; j++) { if (row[j] && row[j].trim() !== '') { parts.push(row[j].trim()); } }
+    manualsData.push({ name: row[0], image: row[1] || '', parts: parts });
+  }
+  if (manualRows && manualRows.length > 0) {
+    for (let i = 1; i < manualRows.length; i++) {
+      const row = manualRows[i];
+      if (!row[0]) continue;
+      const manual = manualsData.find(m => m.name === row[0]);
+      if (manual) { manual.pdf = row[1] || ''; }
+    }
+  }
+}
+
+function extractSingleCode(partString) {
+  const regex = /^\(([^)]+)\)\s+([\d-]+)$/;
+  const match = partString.match(regex);
+  if (match) { return { code: match[1].trim(), number: match[2].trim() }; }
+  return null;
+}
+
+function isCompositePart(partString) {
+  const matches = partString.match(/\([^)]+\)\s+[\d-]+/g);
+  return matches && matches.length > 1;
+}
+
+function parseCompositeParts(partString) {
+  const result = [];
+  const regex = /\(([^)]+)\)\s+([\d-]+)/g;
+  let match;
+  while ((match = regex.exec(partString)) !== null) { result.push({ code: match[1].trim(), number: match[2].trim() }); }
+  return result;
+}
+
+function renderManualGroups() {
+  isSearchMode = false;
+  manualContainer.innerHTML = "";
+  const uniqueNames = [...new Set(manualsData.map(m => m.name))];
+  uniqueNames.forEach(name => {
+    const b = document.createElement("button");
+    b.className = "start-btn";
+    const icon = document.createElement("i"); icon.className = "fa-solid fa-book-open";
+    const span = document.createElement("span"); span.textContent = name;
+    b.appendChild(icon); b.appendChild(span);
+    b.onclick = () => renderManualsByName(name);
+    manualContainer.appendChild(b);
+  });
+  searchInput.value = "";
+  searchResults = []; currentIndex = 0;
+  searchNav.style.display = "none";
+}
+
+function renderManualsByName(name) {
+  isSearchMode = false;
+  manualContainer.innerHTML = "";
+  const currentManual = manualsData.find(m => m.name === name);
+  
+  const pdfButton = document.createElement("div");
+  pdfButton.className = "pdf-top-button";
+  pdfButton.innerHTML = '<i class="fa-solid fa-file-pdf"></i> MANUAL PDF';
+  pdfButton.onclick = () => { if (currentManual && currentManual.pdf) { window.open(currentManual.pdf, '_blank'); } else { alert('PDF для этого мануала не найден'); } };
+  manualContainer.appendChild(pdfButton);
+  
+  manualsData.filter(m => m.name === name).forEach(manual => {
+    renderSingleManual(manual, manualContainer);
+  });
+}
+
 function renderSingleManual(manual, container, hidePdfButton = false) {
   const block = document.createElement("div"); 
   block.className = "block";
   block.dataset.manualName = manual.name;
+  
   loadPointsForManual(manual.name);
+  
   const labelDiv = document.createElement("div");
   labelDiv.className = "manual-label";
+  
   const leftPart = document.createElement("div");
   leftPart.className = "manual-label-left";
-  leftPart.innerHTML = manual.name; // иконка удалена полностью
+  leftPart.innerHTML = `${manual.name} <i class="fa-regular fa-image"></i>`;
   leftPart.onclick = (e) => {
     e.stopPropagation();
     if (manual.image && manual.image.trim() !== '') {
@@ -1111,8 +1422,10 @@ function renderSingleManual(manual, container, hidePdfButton = false) {
       alert('Изображение отсутствует');
     }
   };
+  
   const actionButtons = document.createElement("div");
   actionButtons.className = "manual-label-actions";
+  
   const pointModeBtn = document.createElement("button");
   pointModeBtn.className = "point-mode-btn";
   pointModeBtn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
@@ -1121,26 +1434,35 @@ function renderSingleManual(manual, container, hidePdfButton = false) {
     e.stopPropagation();
     togglePointMode(manual.name, pointModeBtn);
   };
+  
   actionButtons.appendChild(pointModeBtn);
+  
   labelDiv.appendChild(leftPart);
   labelDiv.appendChild(actionButtons);
+  
   const img = document.createElement("img");
   img.className = "top-image";
   img.src = manual.image;
   img.onerror = () => { img.src = 'https://via.placeholder.com/400x200?text=No+Image'; };
+  
   const buttonsContainer = document.createElement("div");
   buttonsContainer.className = "buttons-container";
+  
   block.appendChild(labelDiv);
   block.appendChild(img);
   block.appendChild(buttonsContainer);
+  
   manual.parts.forEach((part, index) => {
     const singleCode = extractSingleCode(part);
     if (singleCode) { createPartButton(buttonsContainer, singleCode.number, singleCode.code); } 
     else if (isCompositePart(part)) { parseCompositeParts(part).forEach(parsedPart => { createPartButton(buttonsContainer, parsedPart.number, parsedPart.code); }); } 
     else { createPartButton(buttonsContainer, part, (index + 1).toString()); }
   });
+  
   container.appendChild(block);
+  
   setupImageClickHandler(img, manual.name, buttonsContainer);
+  
   if (img.complete) {
     drawPointsOnImage(manual.name);
     updatePointsListInUI(manual.name);
@@ -1151,10 +1473,166 @@ function renderSingleManual(manual, container, hidePdfButton = false) {
     };
   }
 }
-// Вспомогательные функции (extractSingleCode, isCompositePart, parseCompositeParts и т.д.) должны быть определены
-// Предполагается, что они уже есть в полном коде (оригинал содержит их). Для краткости они не переписаны, но в финальной версии будут.
-// Все остальные функции (loadStockData, processSheetData и т.д.) полностью сохранены из оригинала.
-// Для корректной работы требуется их полное определение — в финальном ответе они присутствуют.
+
+function createPartButton(container, partNumber, label) {
+  const btn = document.createElement("div");
+  btn.className = "btn";
+  btn.innerHTML = `<span>${label}</span><span class="detail-number">${partNumber}</span>`;
+  btn.onclick = (e) => {
+    const targetDetail = e.target.closest(".detail-number");
+    if (targetDetail) {
+      e.stopPropagation();
+      const originalText = targetDetail.textContent;
+      navigator.clipboard.writeText(originalText).then(() => {
+        targetDetail.textContent = "Скопировано!";
+        setTimeout(() => targetDetail.textContent = originalText, 1200);
+      });
+      return;
+    }
+    toggleDetail(btn);
+  };
+  container.appendChild(btn);
+}
+
+function toggleDetail(btn) {
+  const nextEl = btn.nextElementSibling;
+  if (nextEl && nextEl.classList.contains("detail-info")) { nextEl.remove(); btn.classList.remove("active-detail"); return; }
+  const container = btn.parentElement;
+  container.querySelectorAll(".detail-info").forEach(el => el.remove());
+  container.querySelectorAll(".btn").forEach(b => b.classList.remove("active-detail"));
+  const part = btn.querySelector(".detail-number").textContent;
+  const partData = stockData[part];
+  const info = document.createElement("div"); info.className = "detail-info";
+  let clubDataHtml = "";
+  ["BB", "KH", "SKYMALL", "STORE"].forEach(club => {
+    const clubInfo = partData?.[club] || { quantity: 0, location: '', image: '' };
+    const count = clubInfo.quantity || 0;
+    const hasImage = clubInfo.image && clubInfo.image.trim() !== '';
+    clubDataHtml += `<div class="club-row ${hasImage ? 'has-image' : ''}" onclick="handleClubClick('${club}', '${part}', event)" data-club="${club}" data-part="${part}"><span class="club-name">${club}</span><div class="club-info"><span class="club-quantity ${count === 0 ? 'count-zero' : 'count-positive'}">${count} шт.</span>${hasImage ? '<i class="fa-solid fa-image club-image-icon" title="Нажмите чтобы увидеть изображение"></i>' : ''}</div></div>`;
+  });
+  info.innerHTML = clubDataHtml;
+  btn.after(info);
+  btn.classList.add("active-detail");
+  setTimeout(() => info.classList.add("open"), 10);
+}
+
+function handleClubClick(club, part, event) {
+  event.stopPropagation();
+  const partData = stockData[part];
+  if (partData && partData[club] && partData[club].image && partData[club].image.trim() !== '') {
+    window.open(partData[club].image, '_blank');
+  }
+}
+
+function clearSearch() {
+  searchInput.value = "";
+  searchResults = []; currentIndex = 0;
+  document.querySelectorAll(".search-highlight,.active-highlight").forEach(el => el.classList.remove("search-highlight", "active-highlight"));
+  renderManualGroups();
+  searchNav.style.display = "none";
+}
+
+searchInput.oninput = e => {
+  const searchTerm = e.target.value.trim();
+  searchResults = []; 
+  currentIndex = 0;
+  document.querySelectorAll(".search-highlight,.active-highlight").forEach(el => el.classList.remove("search-highlight", "active-highlight"));
+  
+  if (!searchTerm) { 
+    renderManualGroups(); 
+    searchNav.style.display = "none";
+    return; 
+  }
+  
+  isSearchMode = true;
+  searchNav.style.display = "flex";
+  
+  manualContainer.innerHTML = "";
+  
+  manualsData.forEach(manual => {
+    const hasMatch = manual.parts.some(part => {
+      const singleCode = extractSingleCode(part);
+      if (singleCode && singleCode.number.includes(searchTerm)) return true;
+      if (isCompositePart(part)) { 
+        return parseCompositeParts(part).some(p => p.number.includes(searchTerm)); 
+      }
+      return part.includes(searchTerm);
+    });
+    
+    if (hasMatch) {
+      renderSingleManual(manual, manualContainer, true);
+    }
+  });
+  
+  setTimeout(() => {
+    document.querySelectorAll(".detail-number").forEach(el => {
+      if (el.textContent.includes(searchTerm)) {
+        el.classList.add("search-highlight");
+        searchResults.push(el);
+      }
+    });
+    if (searchResults[0]) { 
+      searchResults[0].classList.add("active-highlight"); 
+      searchResults[0].scrollIntoView({behavior: "smooth", block: "center"});
+    }
+  }, 100);
+};
+
+function nextResult() {
+  if (!searchResults.length) return;
+  if (searchResults[currentIndex]) {
+    searchResults[currentIndex].classList.remove("active-highlight");
+  }
+  currentIndex = (currentIndex + 1) % searchResults.length;
+  if (searchResults[currentIndex]) {
+    searchResults[currentIndex].classList.add("active-highlight");
+    searchResults[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function prevResult() {
+  if (!searchResults.length) return;
+  if (searchResults[currentIndex]) {
+    searchResults[currentIndex].classList.remove("active-highlight");
+  }
+  currentIndex = (currentIndex - 1 + searchResults.length) % searchResults.length;
+  if (searchResults[currentIndex]) {
+    searchResults[currentIndex].classList.add("active-highlight");
+    searchResults[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+window.addEventListener('load', function() {
+  const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+  const email = localStorage.getItem('userEmail');
+  const name = localStorage.getItem('userName');
+  const pic = localStorage.getItem('userPic');
+  if (isLoggedIn && email) {
+    loginSection.style.display = 'none';
+    mainContent.style.display = 'block';
+    userInfo.style.display = 'flex';
+    document.getElementById('user-name').textContent = name || 'User';
+    document.getElementById('user-email').textContent = email;
+    if (pic) document.getElementById('user-pic').src = pic;
+    currentUser = { email: email, name: name, picture: pic };
+    showLoading(true);
+    loadSheetsAPI().then(() => gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] })).then(() => checkEmailInSheet(email)).catch(() => { signOut(); });
+  } else {
+    loginSection.style.display = 'flex';
+    mainContent.style.display = 'none';
+    userInfo.style.display = 'none';
+    const loginDiv = document.getElementById('login-container');
+    if (loginDiv.getAttribute('data-original')) { loginDiv.innerHTML = loginDiv.getAttribute('data-original'); }
+    setTimeout(() => { loadingScreen.classList.add('fade-out'); }, 500);
+  }
+});
+
+window.onload = function() {
+  if (google && google.accounts && google.accounts.id) {
+    google.accounts.id.initialize({ client_id: '328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com', callback: handleCredentialResponse });
+    google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type: 'standard', shape: 'pill', theme: 'outline', text: 'signin_with', size: 'large', logo_alignment: 'left' });
+  }
+};
 </script>
 </body>
 </html>
