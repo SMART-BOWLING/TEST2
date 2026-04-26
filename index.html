@@ -1,955 +1,1033 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>MANUALS - Интерактивные маркеры деталей</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>BLOCKBUSTER</title>
+    <!-- Preload и асинхронная загрузка шрифтов/иконок -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <style>
+        /* КРИТИЧЕСКИЕ СТИЛИ */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-<link rel="icon" type="image/png" href="https://i.postimg.cc/wjGzSY92/1.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        :root {
+            --light-bg: #fefefe;
+            --dark-bg: #1a1a1a;
+            --accent: #dc143c;
+            --text-dark: #1a2f40;
+            --text-light: #ffffff;
+            --text-gray: #FFF;
+            --text-light-gray: #999999;
+            --border-radius: 8px;
+            --input-padding: 12px;
+            --surface: #ffffff;
+            --elevation-1: 0 1px 2px rgba(0,0,0,0.05);
+            --elevation-2: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="https://apis.google.com/js/api.js"></script>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            width: 100%;
+        }
 
-<style>
-* { box-sizing: border-box; }
-html, body { touch-action: manipulation; margin: 0; font-family: 'Segoe UI', sans-serif; background: #ffffff; color: #1f2937; padding-top: 70px; }
-@media (max-width: 768px) { body { padding-bottom: 80px; } }
-header {
-  background: #1f2937; color: white; display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 20px; position: fixed; top: 0; left: 0; right: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 1000;
-}
-.logo img { width: 40px; height: 40px; cursor: pointer; }
-.site-name { flex: 1; text-align: center; font-size: 18px; font-weight: bold; }
-.search-container { position: relative; }
-.search-container input { padding: 6px 30px 6px 10px; border-radius: 6px; border: none; font-size: 16px; width: 140px; }
-.search-container i { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #1f2937; pointer-events: none; }
-#manualContainer { max-width: 1200px; margin: 0 auto; width: 100%; }
-.block { margin: 10px 0; border: 1px solid #e5e7eb; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative; }
-.pdf-top-button {
-  display: flex; align-items: center; justify-content: center; background: #ffffff; color: #1f2937;
-  padding: 14px 12px; margin: 10px 15px 5px 15px; border-radius: 4px; cursor: pointer; font-size: 16px;
-  font-weight: 700; border: 1px solid #e5e7eb;
-}
-.pdf-top-button i { margin-right: 12px; color: #dc143c; }
-.manual-label {
-  background: #1f2937; color: white; padding: 8px 16px; font-size: 16px; font-weight: 600;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.manual-label-left { display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1; }
-.manual-label-left:hover { opacity: 0.8; }
-.manual-label-actions button {
-  background: none; border: none; color: white; cursor: pointer; padding: 6px 10px;
-  border-radius: 6px; font-size: 14px; transition: all 0.2s;
-}
-.manual-label-actions button:hover { background: rgba(255,255,255,0.2); }
-.manual-label-actions button:active { transform: scale(0.95); }
-.point-mode-btn.active { background: #dc143c !important; color: white; }
-.top-image { width: 100%; height: auto; display: block; cursor: pointer; }
-.image-wrapper { position: relative; display: inline-block; width: 100%; }
-.image-points-canvas {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 10;
-}
-.buttons-container { display: none; flex-direction: column; }
-.btn {
-  display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;
-  border-top: 1px solid #eee; cursor: pointer; font-weight: 500; background: white;
-  transition: background 0.2s;
-}
-.btn:hover { background: #f9f9f9; }
-.btn.active-detail { background: #fef2f2; border-left: 3px solid #dc143c; }
-.detail-number { font-family: monospace; font-size: 14px; color: #dc143c; font-weight: 600; }
-.detail-info { overflow: hidden; max-height: 0; opacity: 0; transition: 0.3s ease; background: #fff; border-left: 3px solid #dc143c; }
-.detail-info.open { max-height: 500px; opacity: 1; }
-.club-row {
-  display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
-  border-top: 1px solid #f3f4f6; cursor: pointer; transition: background 0.2s;
-}
-.club-row:hover { background: #f5f5f5; }
-.club-name { font-weight: 600; }
-.club-info { display: flex; align-items: center; gap: 12px; }
-.club-quantity { font-weight: bold; }
-.count-zero { color: #dc143c; }
-.count-positive { color: #16a34a; }
-.club-image-icon { color: #dc143c; font-size: 16px; }
-.search-highlight { background: #ffe4e6; }
-.active-highlight { background: #ffb6b9; }
-.start-btn {
-  display: flex; align-items: center; width: 100%; padding: 18px 20px;
-  background: #1f2937; color: white; font-size: 16px; font-weight: 600;
-  border: none; cursor: pointer; border-bottom: 1px solid #374151;
-  transition: background 0.2s;
-}
-.start-btn:hover { background: #374151; }
-.start-btn i { margin-right: 15px; font-size: 22px; width: 24px; }
-.search-nav-bottom {
-  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  display: none; gap: 10px; z-index: 1000; background: #1f2937;
-  padding: 8px 16px; border-radius: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.search-nav-bottom button {
-  background: transparent; color: white; border: none; width: 44px; height: 44px;
-  cursor: pointer; font-size: 18px; border-radius: 50%; transition: background 0.2s;
-}
-.search-nav-bottom button:hover { background: #374151; }
-.search-nav-bottom button:active { transform: scale(0.95); }
-.shop-fab-left {
-  position: fixed; bottom: 20px; left: 20px; width: 54px; height: 54px;
-  background: #dc143c; color: white; border-radius: 50%; display: flex;
-  align-items: center; justify-content: center; cursor: pointer; z-index: 2001;
-  font-size: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: transform 0.1s;
-}
-.shop-fab-left:active { transform: scale(0.95); }
-.shop-fab-right {
-  position: fixed; bottom: 20px; right: 20px; width: 54px; height: 54px;
-  background: #1f2937; color: white; border-radius: 50%; display: flex;
-  align-items: center; justify-content: center; cursor: pointer; z-index: 2001;
-  font-size: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: transform 0.1s;
-}
-.shop-fab-right:active { transform: scale(0.95); }
-.loading-screen {
-  position: fixed; inset: 0; background: #1f2937; display: flex;
-  justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease;
-}
-.loading-screen.fade-out { opacity: 0; pointer-events: none; }
-.logo-wrapper { position: relative; width: 160px; height: 160px; display: flex; justify-content: center; align-items: center; }
-.glow-ring {
-  position: absolute; width: 80px; height: 80px; border-radius: 100%;
-  background: conic-gradient(#dc143c, transparent 100%); animation: spin 5s linear infinite; filter: blur(20px);
-}
-.loading-screen img { width: 120px; z-index: 2; }
-@keyframes spin { to { transform: rotate(365deg); } }
-#login-section { display: none; justify-content: center; align-items: center; min-height: calc(100vh - 70px); padding: 20px; }
-#login-container { background: white; padding: 30px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-.login-icon { width: 50px; height: 50px; background: #f1f5f9; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-.login-icon i { font-size: 24px; color: #dc143c; }
-#login-container h2 { margin: 15px 0 5px; }
-.login-subtitle { color: #64748b; font-size: 13px; margin-bottom: 25px; }
-#user-info {
-  background: white; display: none; align-items: center; gap: 12px;
-  padding: 12px 15px; margin: 10px 15px; border-radius: 16px;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); position: relative; z-index: 999;
-}
-#user-pic { border-radius: 12px; width: 44px; height: 44px; object-fit: cover; }
-.user-details { flex-grow: 1; }
-#user-name { margin: 0; font-weight: 700; font-size: 14px; }
-#user-email { margin: 0; font-size: 12px; color: #64748b; word-break: break-all; }
-#logout-btn { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
-#logout-btn:hover { background: #dc143c; color: white; }
-#main-content { display: none; }
-.loading-spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(220,20,60,0.2); border-radius: 50%; border-top-color: #dc143c; animation: spin 1s linear infinite; }
-.point-toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-  background: #1f2937; color: white; padding: 8px 16px; border-radius: 40px;
-  font-size: 13px; z-index: 2000; animation: fadeOut 2s ease forwards;
-  white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.point-mode-indicator {
-  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-  background: #dc143c; color: white; padding: 8px 20px; border-radius: 40px;
-  font-size: 13px; z-index: 2000; display: none; gap: 8px;
-  white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  font-weight: 500;
-}
-@keyframes fadeOut {
-  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-  85% { opacity: 1; }
-  100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-}
-.modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.85); display: flex; justify-content: center;
-  align-items: center; z-index: 3000; backdrop-filter: blur(3px);
-}
-.modal-card {
-  background: white; max-width: 90%; max-height: 85%; border-radius: 24px;
-  padding: 20px; text-align: center; overflow: auto; min-width: 280px;
-  box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-}
-.modal-card h3 { margin: 0 0 15px 0; color: #1f2937; }
-.modal-card img { max-width: 100%; max-height: 50vh; border-radius: 12px; margin-top: 15px; border: 1px solid #e5e7eb; }
-.modal-close {
-  margin-top: 20px; background: #dc143c; color: white; border: none;
-  padding: 10px 24px; border-radius: 40px; cursor: pointer; font-size: 14px;
-  font-weight: 600; transition: transform 0.1s;
-}
-.modal-close:active { transform: scale(0.97); }
-.points-management-section {
-  border-top: 1px solid #eee; background: #f8f9fa; padding: 10px 12px;
-}
-.points-management-section > div:first-child { margin-bottom: 8px; }
-.point-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 6px 0; font-size: 13px; border-bottom: 1px solid #e5e7eb;
-}
-.point-number {
-  color: #dc143c; font-weight: 600; cursor: pointer; padding: 4px 8px;
-  border-radius: 6px; transition: background 0.2s;
-}
-.point-number:hover { background: #fee2e2; text-decoration: none; }
-.delete-point {
-  background: none; border: none; color: #9ca3af; cursor: pointer;
-  padding: 6px 10px; border-radius: 6px; transition: all 0.2s;
-}
-.delete-point:hover { color: #dc143c; background: #fee2e2; }
-</style>
+        body {
+            color: #1a2f40;
+            padding: 0;
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            font-weight: 700;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            -webkit-text-size-adjust: 100%;
+            overflow-y: auto;
+        }
+
+        header {
+            background-color: #1f2937;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            user-select: none;
+            z-index: 1000;
+            padding-top: max(10px, env(safe-area-inset-top));
+            padding-left: max(20px, env(safe-area-inset-left));
+            padding-right: max(20px, env(safe-area-inset-right));
+            min-height: 65px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 0;
+            transform: translateY(4px);
+            cursor: pointer;
+        }
+
+        .site-name {
+            flex: 1;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            cursor: default;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid white;
+            background-color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background-color: #1f2937;
+            border: 1px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 9999;
+            min-width: 150px;
+        }
+
+        .user-dropdown a {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #374151;
+        }
+
+        .icon-space {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #1f2937;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-container, .action-loader {
+            position: fixed;
+            inset: 0;
+            background: #1f2937;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+        }
+
+        .loader-container.active, .action-loader.active {
+            display: flex;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glow-ring {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 100%;
+            background: conic-gradient(#dc143c, transparent 100%);
+            animation: spin 5s linear infinite;
+            filter: blur(20px);
+        }
+
+        .logo-wrapper img {
+            width: 120px;
+            z-index: 2;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #login-section {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: #f4f6f9;
+        }
+
+        #login-container {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            border: none;
+        }
+
+        #login-container h2 {
+            color: #1e293b;
+            margin: 15px 0 5px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .login-subtitle {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .login-icon {
+            width: 50px;
+            height: 50px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .login-icon i {
+            font-size: 24px;
+            color: #dc143c;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(220, 20, 60, 0.2);
+            border-radius: 50%;
+            border-top-color: #dc143c;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            background-color: var(--surface);
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            border: none;
+            min-height: -webkit-fill-available;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        .header-section {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+            padding-top: 80px;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--surface);
+            padding: 16px 0;
+            gap: 8px;
+            flex-shrink: 0;
+            border-bottom: 1px solid #f0f0f0;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 100%;
+            margin-top: 0;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            position: relative;
+        }
+
+        .tab-btn-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tab-btn {
+            background: var(--surface);
+            border: 1px solid #e5e5e5;
+            color: var(--text-dark);
+            padding: 12px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: 700;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background-color: #fafafa;
+            border-color: #d0d0d0;
+            color: var(--text-dark);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent);
+            color: var(--text-light);
+            border-color: var(--accent);
+        }
+
+        .tab-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #dc143c;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            line-height: 1;
+            z-index: 10;
+            font-family: monospace;
+            letter-spacing: 0;
+        }
+
+        .tab-badge[data-count="0"] {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .tab-badge {
+                top: -8px;
+                right: -8px;
+                font-size: 11px;
+                min-width: 22px;
+                height: 22px;
+                border-width: 1.5px;
+            }
+            .tab-btn {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+            .tab-btn i {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-badge {
+                top: -6px;
+                right: -6px;
+                font-size: 10px;
+                min-width: 20px;
+                height: 20px;
+                border-width: 1px;
+            }
+            .tab-btn {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+        }
+
+        /* ИСПРАВЛЕНО: поле даты теперь растягивается на всю ширину карточек */
+        .date-picker-field {
+            padding: 16px 0 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: stretch;
+            width: 100%;
+            background: transparent;
+        }
+
+        .date-input-wrapper {
+            position: relative;
+            width: 100%;
+            flex: 1;
+        }
+
+        .date-filter-input {
+            padding: 10px 12px 10px 40px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            background-color: white;
+            color: #1a2f40;
+            cursor: pointer;
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: all 0.2s;
+        }
+
+        .date-filter-input:focus {
+            outline: none;
+            border-color: #dc143c;
+            box-shadow: 0 0 0 2px rgba(220,20,60,0.2);
+        }
+
+        .calendar-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #dc143c;
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        @media (max-width: 767px) {
+            .date-picker-field {
+                padding: 12px 0 8px 0;
+                justify-content: stretch;
+            }
+            .date-input-wrapper {
+                width: 100%;
+                min-width: auto;
+            }
+            .date-filter-input {
+                height: 44px;
+                font-size: 16px;
+            }
+        }
+
+        .flatpickr-calendar {
+            font-family: "Poppins", sans-serif;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover {
+            background: #dc143c;
+            border-color: #dc143c;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 0;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        .task-card {
+            background: white;
+            margin: 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            min-height: 280px;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .task-header {
+            padding: 16px 16px 12px;
+            border-bottom: 2px solid #dc143c;
+            margin-bottom: 0;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.4;
+            text-align: left;
+            padding: 0 5px;
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 0;
+        }
+
+        .content-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid #e0e0e0;
+            min-height: 48px;
+            height: 48px;
+        }
+
+        .content-row:last-child {
+            border-bottom: none;
+        }
+
+        .row-label {
+            font-size: 14px;
+            color: #000000;
+            font-weight: 700;
+            flex-shrink: 0;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .row-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #000000;
+            text-align: right;
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100%;
+            line-height: 1;
+        }
+
+        .executor-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 16px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: auto;
+            min-height: 74px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .schema-button {
+            background-color: #1a2f40;
+            color: white;
+            padding: 11px 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+            height: 42px;
+            min-height: 42px;
+            touch-action: manipulation;
+            z-index: 1;
+        }
+
+        .submit-btn {
+            background-color: #dc143c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 4px;
+            padding: 11px 14px;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            height: 42px;
+            min-height: 42px;
+            touch-action: manipulation;
+            z-index: 1;
+        }
+
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submitted-text {
+            color: #000;
+            font-weight: 700;
+            padding: 11px 14px;
+            border: 1px solid #FFFFFF;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: center;
+            background: #FFFFFF;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            height: 42px;
+            min-height: 42px;
+            gap: 6px;
+        }
+
+        .no-open {
+            color: #999;
+            font-style: italic;
+            padding: 13px 24px;
+            border: 1px dashed #ddd;
+            border-radius: 4px;
+            font-size: 11px;
+            text-align: center;
+            background: #f8f9fa;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            height: 46px;
+            min-height: 46px;
+            min-width: 140px;
+            width: auto;
+            flex: 0 0 auto;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            margin-bottom: 80px;
+            padding: 20px 10px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+
+        .page-btn {
+            background: white;
+            border: 1px solid #e5e5e5;
+            color: #1a2f40;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .page-btn.active {
+            background-color: #dc143c;
+            color: white;
+            border-color: #dc143c;
+        }
+
+        .page-btn:disabled {
+            background-color: #f0f0f0;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            margin: 0 10px;
+        }
+
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .confirm-modal-content {
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 320px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: slideUp 0.2s ease;
+        }
+
+        .confirm-modal-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #dc143c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .confirm-modal-icon i {
+            font-size: 30px;
+            color: white;
+        }
+
+        .confirm-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2f40;
+            margin-bottom: 8px;
+        }
+
+        .confirm-modal-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .confirm-modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .confirm-modal-btn.confirm {
+            background-color: #dc143c;
+            color: white;
+        }
+
+        .confirm-modal-btn.cancel {
+            background-color: #e5e5e5;
+            color: #1a2f40;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 767px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 12px;
+            }
+            .task-card {
+                min-height: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<div class="loading-screen" id="loadingScreen">
-  <div class="logo-wrapper"><div class="glow-ring"></div><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Loading Logo"></div>
-</div>
-
-<div id="login-section">
-  <div id="login-container">
-    <div class="login-icon"><i class="fas fa-shield-halved"></i></div>
-    <h2>MANUALS</h2>
-    <div class="login-subtitle">Sign in to access</div>
-    <div id="g_id_onload" data-client_id="328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
-    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large"></div>
-  </div>
-</div>
-
-<div id="user-info">
-  <img id="user-pic" src="">
-  <div class="user-details"><p id="user-name"></p><p id="user-email"></p></div>
-  <button id="logout-btn" onclick="signOut()"><i class="fas fa-power-off"></i></button>
-</div>
-
-<div id="main-content">
-  <header>
-    <div class="logo" onclick="window.location.href='https://smart-bowling.github.io/SMB/'"><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Logo"></div>
-    <div class="site-name">MANUALS</div>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Поиск детали">
-      <i class="fa-solid fa-magnifying-glass"></i>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="logo-wrapper"><div class="glow-ring"></div><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Loading Logo"></div>
     </div>
-  </header>
-  <div id="manualContainer"></div>
-  <div class="search-nav-bottom" id="searchNav">
-    <button onclick="prevResult()"><i class="fa-solid fa-chevron-left"></i></button>
-    <button id="clearSearchBtn" onclick="clearSearch()"><i class="fa-solid fa-times"></i></button>
-    <button onclick="nextResult()"><i class="fa-solid fa-chevron-right"></i></button>
-  </div>
-  <div class="shop-fab-left" onclick="openShopSearch()"><i class="fa-solid fa-magnifying-glass"></i></div>
-  <div class="shop-fab-right" onclick="renderManualGroups()"><i class="fa-solid fa-arrow-left"></i></div>
-</div>
-
-<div class="point-mode-indicator" id="pointModeIndicator">
-  <i class="fa-solid fa-plus-circle"></i><span>Режим добавления маркеров. Нажмите на схему...</span>
-</div>
-
-<script>
-// ====================== СИСТЕМА МАРКЕРОВ ======================
-let allPoints = {};
-let activePointMode = {};
-
-function loadPointsForManual(manualName) {
-    const saved = localStorage.getItem(`points_${manualName}`);
-    if (saved) { allPoints[manualName] = JSON.parse(saved); } 
-    else { allPoints[manualName] = []; }
-    return allPoints[manualName];
-}
-
-function savePointsForManual(manualName) {
-    localStorage.setItem(`points_${manualName}`, JSON.stringify(allPoints[manualName] || []));
-}
-
-function addPointToManual(manualName, xPercent, yPercent, number) {
-    if (!allPoints[manualName]) allPoints[manualName] = [];
-    allPoints[manualName].push({ x: xPercent, y: yPercent, number: number, createdAt: Date.now() });
-    savePointsForManual(manualName);
-    drawPointsOnImage(manualName);
-    updatePointsListInUI(manualName);
-}
-
-function deletePointFromManual(manualName, index) {
-    if (allPoints[manualName] && allPoints[manualName][index]) {
-        allPoints[manualName].splice(index, 1);
-        savePointsForManual(manualName);
-        drawPointsOnImage(manualName);
-        updatePointsListInUI(manualName);
-        showToast(`🗑️ Маркер удален`);
-    }
-}
-
-function drawPointsOnImage(manualName) {
-    const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
-    if (!block) return;
-    const img = block.querySelector('.top-image');
-    const wrapper = block.querySelector('.image-wrapper');
-    if (!wrapper || !img) return;
-    
-    let canvas = wrapper.querySelector('.image-points-canvas');
-    if (!canvas) { canvas = document.createElement('canvas'); canvas.className = 'image-points-canvas'; wrapper.appendChild(canvas); }
-    
-    if (!img.complete || img.naturalWidth === 0) { 
-        img.onload = () => drawPointsOnImage(manualName); 
-        return; 
-    }
-    
-    const rect = wrapper.getBoundingClientRect();
-    if (rect.width === 0) return;
-    
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = `${rect.width}px`;
-    canvas.style.height = `${rect.height}px`;
-    
-    const ctx = canvas.getContext('2d');
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, rect.width, rect.height);
-    
-    const points = allPoints[manualName] || [];
-    points.forEach(point => {
-        const x = point.x * rect.width;
-        const y = point.y * rect.height;
-        let radius = rect.width < 500 ? 11 : (rect.width < 800 ? 13 : 15);
+    <div class="loader-container" id="loader"><div class="logo-wrapper"><div class="glow-ring"></div><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Loading"></div></div>
+    <div id="login-section"><div id="login-container"><div class="login-icon"><i class="fas fa-shield-halved"></i></div><h2>BLOCKBUSTER</h2><div class="login-subtitle">Войдите для доступа</div><div id="g_id_onload" data-client_id="328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false" data-auto_select="false"></div><div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div></div></div>
+    <div id="main-content" style="display: none;">
+        <header><div class="logo"><a href="https://smart-bowling.github.io/SMB/"><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Logo"></a></div><div class="site-name">BLOCKBUSTER</div><div class="user-avatar" id="userAvatar" onclick="toggleUserDropdown()"><i class="fas fa-user"></i></div><div class="user-dropdown" id="userDropdown"><a href="#" onclick="signOut()"><i class="fas fa-sign-out-alt icon-space"></i> ВЫЙТИ</a></div></header>
+        <div class="container">
+            <div class="header-section">
+                <div class="tabs">
+                    <div class="tab-btn-wrapper"><button class="tab-btn active" data-tab="tab1"><i class="fas fa-wrench"></i> МЕХАНИК</button><span class="tab-badge" id="mechanic-badge" data-count="0">0</span></div>
+                    <div class="tab-btn-wrapper"><button class="tab-btn" data-tab="tab2"><i class="fas fa-user-tie"></i> ИНСТРУКТОР</button><span class="tab-badge" id="instructor-badge" data-count="0">0</span></div>
+                    <div class="tab-btn-wrapper"><button class="tab-btn" data-tab="tab3"><i class="fas fa-bowling-ball"></i> КЛУБ</button><span class="tab-badge" id="club-badge" data-count="0">0</span></div>
+                </div>
+                <div class="date-picker-field"><div class="date-input-wrapper"><i class="fas fa-calendar-alt calendar-icon"></i><input type="text" class="date-filter-input" id="date-filter-input" placeholder="Выберите дату" readonly></div></div>
+            </div>
+            <div class="tab-content active" id="tab1"><div class="cards-grid" id="journal-cards"></div><div class="pagination" id="journal-pagination"></div></div>
+            <div class="tab-content" id="tab2"><div class="cards-grid" id="instructor-cards"></div><div class="pagination" id="instructor-pagination"></div></div>
+            <div class="tab-content" id="tab3"><div class="cards-grid" id="engineer-cards"></div><div class="pagination" id="engineer-pagination"></div></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
+    <script>
+        // ---- КОНФИГУРАЦИЯ ----
+        const AUTH_SPREADSHEET_ID = '1-yiVdZYa6wJdupTiuiHvI_ht3Vu73RUjyCehZqs2cJ4';
+        const AUTH_SHEET_NAME = '1';
+        const AUTH_API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
+        const CURRENT_SITE = 'https://smart-bowling.github.io/SMB-LS-KH/';
+        const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbybAzfS956B-u4Vyr9ro3V2WAfmOtSeB7jxFIgTdsvzy_YJpo8C-9-v3Zerk9mgo1sT/exec';
+        const CARDS_PER_PAGE = 50;
+        let currentUser = null, currentUserNameFromSheet = null;
+        let originalJournalData = [];          // сырые данные со всеми задачами
+        let journalData = [], instructorData = [], engineerData = [];
+        let currentJournalPage = 1, currentInstructorPage = 1, currentEngineerPage = 1;
+        let totalJournalPages = 1, totalInstructorPages = 1, totalEngineerPages = 1;
+        let isFilterActive = false, currentFilterDate = '';
+        let datePicker = null, isInitialLoad = true;
+        let pendingTasks = new Set();
         
-        ctx.beginPath();
-        ctx.arc(x, y, radius + 3, 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(220, 20, 60, 0.35)';
-        ctx.fill();
+        // ---- DOM элементы ----
+        const loadingScreen = document.getElementById("loadingScreen"), loginSection = document.getElementById("login-section"), mainContent = document.getElementById("main-content"), loader = document.getElementById("loader");
         
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = '#dc143c';
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
+        // ---- Вспомогательные функции ----
+        function toggleUserDropdown() { const m = document.getElementById("userDropdown"); m.style.display = m.style.display === "block" ? "none" : "block"; }
+        function updateUserAvatar(user) { const a = document.getElementById('userAvatar'); if (user?.picture) a.innerHTML = `<img src="${user.picture}" alt="Avatar">`; else a.innerHTML = '<i class="fas fa-user"></i>'; }
+        function showLoader() { loader.classList.add('active'); }
+        function hideLoader() { loader.classList.remove('active'); }
+        function scrollToTop() { window.scrollTo({ top:0, behavior:'smooth' }); }
         
-        ctx.font = `bold ${Math.max(12, Math.min(17, radius))}px "Segoe UI", system-ui`;
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(point.number, x, y);
-    });
-}
-
-function updatePointsListInUI(manualName) {
-    const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
-    if (!block) return;
-    
-    const oldSection = block.querySelector('.points-management-section');
-    if (oldSection) oldSection.remove();
-    
-    const points = allPoints[manualName] || [];
-    if (points.length === 0) return;
-    
-    const section = document.createElement('div');
-    section.className = 'points-management-section';
-    section.innerHTML = `<div style="font-size:12px; font-weight:600; color:#6b7280;"><i class="fa-solid fa-location-dot"></i> Маркеры на схеме (нажмите на номер для инфо):</div>`;
-    
-    points.forEach((point, idx) => {
-        const row = document.createElement('div');
-        row.className = 'point-item';
-        const numSpan = document.createElement('span');
-        numSpan.className = 'point-number';
-        numSpan.innerHTML = `<i class="fa-solid fa-map-pin"></i> №${point.number}`;
-        numSpan.onclick = (e) => {
-            e.stopPropagation();
-            showMarkerInfo(manualName, point.number);
-        };
-        const delBtn = document.createElement('button');
-        delBtn.className = 'delete-point';
-        delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
-        delBtn.title = 'Удалить маркер';
-        delBtn.onclick = (e) => {
-            e.stopPropagation();
-            if (confirm(`Удалить маркер детали №${point.number}?`)) {
-                deletePointFromManual(manualName, idx);
-            }
-        };
-        row.appendChild(numSpan);
-        row.appendChild(delBtn);
-        section.appendChild(row);
-    });
-    
-    const buttonsContainer = block.querySelector('.buttons-container');
-    if (buttonsContainer) buttonsContainer.appendChild(section);
-}
-
-function showMarkerInfo(manualName, partNumber) {
-    const partData = stockData[partNumber] || { BB: { quantity: 0, image: '' }, KH: { quantity: 0, image: '' }, SKYMALL: { quantity: 0, image: '' }, STORE: { quantity: 0, image: '' } };
-    let totalQty = 0;
-    let anyImage = '';
-    
-    let html = `<div style="font-family:sans-serif; text-align:left;">
-                    <h3 style="margin:0 0 15px 0; color:#1f2937; text-align:center; border-bottom:2px solid #dc143c; padding-bottom:10px;">
-                        <i class="fa-solid fa-cube"></i> Деталь №${partNumber}
-                    </h3>`;
-    
-    const clubs = [
-        { name: 'BB', label: 'BB Bowling' },
-        { name: 'KH', label: 'KH Pro Shop' },
-        { name: 'SKYMALL', label: 'SkyMall' },
-        { name: 'STORE', label: 'Магазин' }
-    ];
-    
-    for (let club of clubs) {
-        let q = partData[club.name]?.quantity || 0;
-        totalQty += q;
-        if (partData[club.name]?.image && partData[club.name].image.trim()) anyImage = partData[club.name].image;
-        html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0;">
-                    <span style="font-weight:600;">${club.label}:</span>
-                    <span style="font-weight:bold; font-size:16px; ${q === 0 ? 'color:#dc143c' : 'color:#16a34a'}">${q} шт.</span>
-                 </div>`;
-    }
-    
-    html += `<div style="margin-top:15px; padding:10px; background:#f0f9ff; border-radius:12px; text-align:center;">
-                <strong>📦 Общее количество: ${totalQty} шт.</strong>
-             </div>`;
-    
-    if (anyImage) {
-        html += `<img src="${anyImage}" style="max-width:100%; margin-top:18px; border-radius:12px; border:1px solid #ddd; box-shadow:0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'">`;
-    } else {
-        html += `<div style="margin-top:18px; padding:12px; color:#888; text-align:center; background:#f9f9f9; border-radius:12px;">
-                    <i class="fa-regular fa-image" style="font-size:24px;"></i><br>Фото отсутствует
-                 </div>`;
-    }
-    
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `<div class="modal-card">${html}<button class="modal-close"><i class="fa-regular fa-circle-check"></i> Закрыть</button></div>`;
-    document.body.appendChild(modal);
-    modal.querySelector('.modal-close').onclick = () => modal.remove();
-    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-}
-
-function togglePointMode(manualName, btn) {
-    if (activePointMode[manualName]) {
-        activePointMode[manualName] = false;
-        btn.classList.remove('active');
-        btn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
-        document.getElementById('pointModeIndicator').style.display = 'none';
-        showToast('Режим добавления маркеров выключен');
-    } else {
-        for (let key in activePointMode) {
-            if (activePointMode[key]) {
-                activePointMode[key] = false;
-                const oldBtn = document.querySelector(`.block[data-manual-name="${key}"] .point-mode-btn`);
-                if (oldBtn) { oldBtn.classList.remove('active'); oldBtn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>'; }
-            }
+        function updateTabBadges() {
+            const mech = journalData.filter(t => !t.isCompleted).length;
+            const instr = instructorData.filter(t => !t.isCompleted).length;
+            const club = engineerData.filter(t => !t.isCompleted).length;
+            const mechBadge = document.getElementById('mechanic-badge'); mechBadge.textContent = mech; mechBadge.setAttribute('data-count', mech); mechBadge.style.display = mech > 0 ? 'inline-flex' : 'none';
+            const instrBadge = document.getElementById('instructor-badge'); instrBadge.textContent = instr; instrBadge.setAttribute('data-count', instr); instrBadge.style.display = instr > 0 ? 'inline-flex' : 'none';
+            const clubBadge = document.getElementById('club-badge'); clubBadge.textContent = club; clubBadge.setAttribute('data-count', club); clubBadge.style.display = club > 0 ? 'inline-flex' : 'none';
         }
-        activePointMode[manualName] = true;
-        btn.classList.add('active');
-        btn.innerHTML = '<i class="fa-solid fa-dot-circle"></i>';
-        document.getElementById('pointModeIndicator').style.display = 'flex';
-        showToast('🎯 Режим добавления маркеров включен. Нажмите на схему, чтобы добавить маркер');
         
-        setTimeout(() => {
-            if (activePointMode[manualName]) {
-                activePointMode[manualName] = false;
-                btn.classList.remove('active');
-                btn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
-                document.getElementById('pointModeIndicator').style.display = 'none';
-                showToast('Режим добавления маркеров автоматически выключен');
-            }
-        }, 30000);
-    }
-}
-
-function showToast(msg) {
-    const t = document.createElement('div');
-    t.className = 'point-toast';
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2500);
-}
-
-function setupImageClickHandler(img, manualName, buttonsContainer) {
-    let wrapper = img.parentElement;
-    if (!wrapper.classList.contains('image-wrapper')) {
-        const newWrap = document.createElement('div');
-        newWrap.className = 'image-wrapper';
-        img.parentElement.insertBefore(newWrap, img);
-        newWrap.appendChild(img);
-        wrapper = newWrap;
-    }
-    
-    const addPointInteraction = (clientX, clientY) => {
-        if (!activePointMode[manualName]) {
-            showToast('⚠️ Сначала включите режим добавления маркеров (кнопка с кружком)');
-            return false;
+        // ---- Google Auth & API ----
+        function loadSheetsAPI() { return new Promise((resolve, reject) => { gapi.load('client', { callback: resolve, onerror: () => reject('Ошибка загрузки API'), timeout: 10000, ontimeout: () => reject('Таймаут') }); }); }
+        function handleCredentialResponse(response) { try { const payload = JSON.parse(atob(response.credential.split('.')[1])); currentUser = { email: payload.email.toLowerCase(), name: payload.name, picture: payload.picture }; showLoading(true); initAndCheckEmail(); } catch(e) { console.error(e); showLoading(false); alert('Ошибка аутентификации'); } }
+        function showLoading(show) { const div = document.getElementById('login-container'); if(show) { if(!div.hasAttribute('data-original')) div.setAttribute('data-original', div.innerHTML); div.innerHTML = '<div style="padding:40px;text-align:center;"><div class="loading-spinner"></div><br><span style="color:#64748b;">Проверка доступа...</span></div>'; } else { if(div.getAttribute('data-original') && loginSection.style.display !== 'none') { div.innerHTML = div.getAttribute('data-original'); if(window.google?.accounts?.id) google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type:'standard', shape:'pill', theme:'outline', text:'signin_with', size:'large', logo_alignment:'left' }); } } }
+        async function initAndCheckEmail() { try { await loadSheetsAPI(); await gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] }); await checkEmailInSheet(currentUser.email); } catch(e) { console.error(e); showLoading(false); alert('Ошибка инициализации'); } }
+        async function checkEmailInSheet(email) { try { const res = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId: AUTH_SPREADSHEET_ID, range: `${AUTH_SHEET_NAME}!A:Z` }); const rows = res.result.values; if(!rows) { showLoading(false); alert('Таблица пуста'); return; } let hasAccess = false, foundName = null; for(let i=0;i<rows.length;i++) { if(rows[i]?.[0]?.toLowerCase().trim() === email) { for(let j=1;j<rows[i].length;j++) { const site = rows[i][j]?.trim().split('?')[0]; if(site === CURRENT_SITE || site?.includes('SMB-LS-KH')) hasAccess = true; } if(rows[i][1]) foundName = rows[i][1].trim(); break; } } if(hasAccess) { currentUserNameFromSheet = foundName || currentUser.name; loginUser(currentUser); } else { showLoading(false); alert('Доступ запрещен'); } } catch(e) { console.error(e); showLoading(false); alert('Ошибка доступа'); } }
+        function loginUser(payload) { loginSection.style.display = 'none'; mainContent.style.display = 'block'; updateUserAvatar(payload); localStorage.setItem('userLoggedIn','true'); localStorage.setItem('userEmail',payload.email); localStorage.setItem('userName',payload.name); localStorage.setItem('userNameFromSheet',currentUserNameFromSheet||payload.name); localStorage.setItem('userPic',payload.picture); showLoading(false); setTimeout(()=>loadingScreen.classList.add('fade-out'),500); initializeApp(); }
+        function signOut() { localStorage.clear(); sessionStorage.clear(); if(google?.accounts?.id) google.accounts.id.disableAutoSelect(); mainContent.style.display = 'none'; loginSection.style.display = 'flex'; const div = document.getElementById('login-container'); if(div.getAttribute('data-original')) { div.innerHTML = div.getAttribute('data-original'); if(window.google?.accounts?.id) google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type:'standard', shape:'pill', theme:'outline', text:'signin_with', size:'large', logo_alignment:'left' }); } }
+        
+        // ---- Работа с данными ----
+        async function makeRequest(url, options={}) { try { if(!options.method || options.method==='GET') url += `${url.includes('?')?'&':'?'}_=${Date.now()}`; const res = await fetch(url,options); return await res.json(); } catch(e) { throw e; } }
+        
+        async function loadAllTasks() {
+            const fresh = await makeRequest(`${BACKEND_URL}?action=getJournal`);
+            originalJournalData = [...fresh];
+            journalData = fresh.filter(t => ['PS','МЕХ','ps','мех'].some(k=> (t.task||'').toLowerCase().includes(k.toLowerCase())));
+            instructorData = fresh.filter(t => ['ИНСТ','инст'].some(k=> (t.task||'').toLowerCase().includes(k.toLowerCase())));
+            engineerData = fresh.filter(t => (t.task||'').toLowerCase().includes('клуб'));
         }
-        const rect = wrapper.getBoundingClientRect();
-        const px = (clientX - rect.left) / rect.width;
-        const py = (clientY - rect.top) / rect.height;
-        if (px >= 0 && px <= 1 && py >= 0 && py <= 1) {
-            const partNum = prompt('Введите номер детали для маркера:', '');
-            if (partNum && partNum.trim()) {
-                addPointToManual(manualName, px, py, partNum.trim());
-                showToast(`✓ Маркер детали №${partNum} добавлен`);
-            }
-            return true;
+        
+        // Локальное обновление статуса (без изменения порядка карточек)
+        function updateLocalTaskStatus(rowIndex, executorName) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ru-RU');
+            const updateArray = (arr) => { if(!arr) return; const task = arr.find(t => t.rowIndex === rowIndex); if(task && !task.isCompleted) { task.isCompleted = true; task.completedDate = dateStr; task.executor = executorName; } };
+            updateArray(journalData);
+            updateArray(instructorData);
+            updateArray(engineerData);
+            updateArray(originalJournalData);
+            // Перерисовываем текущую вкладку без изменения порядка и без перемещения вниз
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab?.id === 'tab1') renderJournalCards(journalData);
+            else if (activeTab?.id === 'tab2') renderInstructorCards(instructorData);
+            else if (activeTab?.id === 'tab3') renderEngineerCards(engineerData);
+            updateTabBadges();
         }
-        return false;
-    };
-    
-    img.onclick = (e) => {
-        e.stopPropagation();
-        if (activePointMode[manualName]) {
-            addPointInteraction(e.clientX, e.clientY);
-        } else {
-            if (buttonsContainer) {
-                buttonsContainer.style.display = buttonsContainer.style.display === "flex" ? "none" : "flex";
-            }
-        }
-    };
-    
-    img.addEventListener('touchstart', (e) => {
-        if (activePointMode[manualName]) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            addPointInteraction(touch.clientX, touch.clientY);
-        }
-    });
-    
-    if (img.complete) {
-        drawPointsOnImage(manualName);
-    } else {
-        img.onload = () => drawPointsOnImage(manualName);
-    }
-}
-// ====================== КОНЕЦ СИСТЕМЫ МАРКЕРОВ ======================
-
-// ====================== GOOGLE SHEETS ЛОГИКА ======================
-const AUTH_SPREADSHEET_ID = '1-yiVdZYa6wJdupTiuiHvI_ht3Vu73RUjyCehZqs2cJ4';
-const AUTH_SHEET_NAME = '1';
-const AUTH_API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
-const API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
-const SPREADSHEET_ID = '1v-R394u6sKzSdvmkh9qsbqhfkNZEi5lIXwo8BdT_lhQ';
-const MANUALS_RANGE = 'MANUALS!A:CC';
-const MANUAL_RANGE = 'MANUAL!A:B';
-const STORE_RANGE = 'STORE!A:D';
-const BB_RANGE = 'BB!A:D';
-const KH_RANGE = 'KH!A:D';
-const SKYMALL_RANGE = 'SKYMALL!A:D';
-const CURRENT_SITE = 'https://smart-bowling.github.io/MANUALS-SMART/';
-
-let currentUser = null, manualsData = [], stockData = {}, searchResults = [], currentIndex = 0, isSearchMode = false;
-const manualContainer = document.getElementById("manualContainer");
-const searchInput = document.getElementById("searchInput");
-const loadingScreen = document.getElementById("loadingScreen");
-const loginSection = document.getElementById("login-section");
-const mainContent = document.getElementById("main-content");
-const userInfo = document.getElementById("user-info");
-const searchNav = document.getElementById("searchNav");
-
-function openShopSearch() {
-    const pn = prompt("Введите номер детали для поиска в магазине:", "");
-    if (pn && pn.trim()) {
-        const form = document.createElement('form');
-        form.method = 'get';
-        form.action = 'https://shop.bowlingvision.com/catalogue/results.aspx';
-        const inp = document.createElement('input');
-        inp.type = 'text';
-        inp.name = 'search';
-        inp.value = pn.replace(/-/g, '');
-        form.appendChild(inp);
-        document.body.appendChild(form);
-        form.submit();
-        setTimeout(() => form.remove(), 1000);
-    }
-}
-
-function loadSheetsAPI() {
-    return new Promise((resolve, reject) => {
-        gapi.load('client', { callback: resolve, onerror: reject });
-    });
-}
-
-function handleCredentialResponse(r) {
-    try {
-        const p = parseJwt(r.credential);
-        currentUser = { email: p.email.toLowerCase().trim(), name: p.name, picture: p.picture };
-        showLoading(true);
-        initAndCheckEmail();
-    } catch (e) { alert('Ошибка аутентификации'); }
-}
-
-function showLoading(show) {
-    const div = document.getElementById('login-container');
-    if (show) {
-        if (!div.hasAttribute('data-original')) div.setAttribute('data-original', div.innerHTML);
-        div.innerHTML = '<div style="padding:40px; text-align:center;"><div class="loading-spinner"></div><br><span style="color:#64748b;">Проверка доступа...</span></div>';
-    } else if (div.getAttribute('data-original') && loginSection.style.display !== 'none') {
-        div.innerHTML = div.getAttribute('data-original');
-        if (window.google?.accounts?.id) {
-            google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type: 'standard', shape: 'pill', theme: 'outline', text: 'signin_with', size: 'large' });
-        }
-    }
-}
-
-async function initAndCheckEmail() {
-    await loadSheetsAPI();
-    await gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] });
-    await checkEmailInSheet(currentUser.email);
-}
-
-async function checkEmailInSheet(email) {
-    const res = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId: AUTH_SPREADSHEET_ID, range: `${AUTH_SHEET_NAME}!A:Z` });
-    const rows = res.result.values;
-    let ok = false;
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i]?.[0]?.toLowerCase().trim() === email) {
-            for (let j = 1; j < rows[i].length; j++) {
-                if (rows[i][j]?.trim().split('?')[0] === CURRENT_SITE || rows[i][j]?.includes('MANUALS-SMART')) {
-                    ok = true;
-                    break;
-                }
-            }
-            break;
-        }
-    }
-    if (ok) loginUser(currentUser);
-    else { showLoading(false); alert('Доступ запрещен: Ваш email не найден в таблице'); }
-}
-
-function loginUser(p) {
-    loginSection.style.display = 'none';
-    mainContent.style.display = 'block';
-    userInfo.style.display = 'flex';
-    document.getElementById('user-pic').src = p.picture;
-    document.getElementById('user-name').textContent = p.name;
-    document.getElementById('user-email').textContent = p.email;
-    localStorage.setItem('userLoggedIn', 'true');
-    localStorage.setItem('userEmail', p.email);
-    localStorage.setItem('userName', p.name);
-    localStorage.setItem('userPic', p.picture);
-    loadFromGoogleSheets();
-    showLoading(false);
-}
-
-function parseJwt(t) {
-    try { return JSON.parse(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return {}; }
-}
-
-function signOut() {
-    localStorage.clear();
-    if (google?.accounts?.id) google.accounts.id.disableAutoSelect();
-    mainContent.style.display = 'none';
-    userInfo.style.display = 'none';
-    loginSection.style.display = 'flex';
-    const div = document.getElementById('login-container');
-    if (div.getAttribute('data-original')) div.innerHTML = div.getAttribute('data-original');
-}
-
-async function loadFromGoogleSheets() {
-    try {
-        const manualsResp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MANUALS_RANGE}?key=${API_KEY}`);
-        const manualResp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MANUAL_RANGE}?key=${API_KEY}`);
-        const manualsRaw = await manualsResp.json();
-        const manualRaw = await manualResp.json();
-        await loadStockData();
-        processSheetData(manualsRaw.values, manualRaw.values);
-        renderManualGroups();
-        setTimeout(() => loadingScreen.classList.add('fade-out'), 500);
-    } catch (e) {
-        console.error(e);
-        loadingScreen.classList.add('fade-out');
-        manualContainer.innerHTML = '<div style="padding:20px; text-align:center;">Ошибка загрузки данных. Обновите страницу.</div>';
-    }
-}
-
-async function loadStockData() {
-    try {
-        const stores = ['STORE', 'BB', 'KH', 'SKYMALL'];
-        const ranges = [STORE_RANGE, BB_RANGE, KH_RANGE, SKYMALL_RANGE];
-        stockData = {};
-        for (let i = 0; i < stores.length; i++) {
-            const resp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${ranges[i]}?key=${API_KEY}`);
-            const data = await resp.json();
-            processStockSheet(data.values, stores[i]);
-        }
-    } catch (e) { generateDemoStockData(); }
-}
-
-function processStockSheet(rows, sheet) {
-    if (!rows) return;
-    for (let i = 1; i < rows.length; i++) {
-        const row = rows[i];
-        if (!row[0]) continue;
-        const num = row[0].trim();
-        const qty = parseInt(row[1]) || 0;
-        if (!stockData[num]) stockData[num] = { BB: { quantity: 0, image: '' }, KH: { quantity: 0, image: '' }, SKYMALL: { quantity: 0, image: '' }, STORE: { quantity: 0, image: '' } };
-        stockData[num][sheet] = { quantity: qty, location: row[2] || '', image: row[3] || '' };
-    }
-}
-
-function generateDemoStockData() {
-    const all = new Set();
-    manualsData.forEach(m => m.parts.forEach(p => all.add(p)));
-    all.forEach(p => {
-        stockData[p] = {
-            BB: { quantity: Math.floor(Math.random() * 5), image: '' },
-            KH: { quantity: Math.floor(Math.random() * 3), image: '' },
-            SKYMALL: { quantity: Math.floor(Math.random() * 4), image: '' },
-            STORE: { quantity: Math.floor(Math.random() * 2), image: '' }
-        };
-    });
-}
-
-function processSheetData(manRows, manRef) {
-    manualsData = [];
-    if (manRows) {
-        for (let i = 1; i < manRows.length; i++) {
-            const r = manRows[i];
-            if (r[0]) {
-                const parts = [];
-                for (let j = 2; j < r.length; j++) if (r[j]?.trim()) parts.push(r[j].trim());
-                manualsData.push({ name: r[0], image: r[1] || '', parts: parts, pdf: '' });
+        
+        async function completeTaskAsync(taskId, executorName, rowIndex, buttonElement) {
+            if (pendingTasks.has(rowIndex)) return;
+            pendingTasks.add(rowIndex);
+            const originalHtml = buttonElement.innerHTML;
+            const originalDisabled = buttonElement.disabled;
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ВЫПОЛНЯЕТСЯ...';
+            buttonElement.disabled = true;
+            try {
+                const updateUrl = `${BACKEND_URL}?action=updateCell&sheetName=B&column=E&row=${rowIndex}&value=${encodeURIComponent(executorName)}`;
+                const updateUrl2 = `${BACKEND_URL}?action=updateFromRowNumber&rowNumber=${rowIndex}`;
+                fetch(updateUrl).catch(e => console.error('Фон:', e));
+                fetch(updateUrl2).catch(e => console.error('Фон:', e));
+                // Мгновенное обновление UI без перемещения карточки вниз
+                buttonElement.innerHTML = '<i class="fas fa-check-circle"></i> ВЫПОЛНЕНО';
+                buttonElement.style.backgroundColor = '#28a745';
+                updateLocalTaskStatus(rowIndex, executorName);
+                setTimeout(() => { pendingTasks.delete(rowIndex); }, 2000);
+            } catch(e) {
+                console.error(e);
+                buttonElement.innerHTML = originalHtml;
+                buttonElement.disabled = originalDisabled;
+                pendingTasks.delete(rowIndex);
+                alert('Ошибка при выполнении');
             }
         }
-    }
-    if (manRef) {
-        for (let i = 1; i < manRef.length; i++) {
-            const r = manRef[i];
-            if (r[0]) {
-                const m = manualsData.find(x => x.name === r[0]);
-                if (m) m.pdf = r[1] || '';
-            }
+        
+        function showConfirmModal(taskId, rowIndex, buttonElement) { 
+            const modal = document.createElement('div'); modal.className = 'confirm-modal'; 
+            modal.innerHTML = `<div class="confirm-modal-content"><div class="confirm-modal-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="confirm-modal-title">Подтверждение</div><div class="confirm-modal-message">Вы уверены, что нажатие было не случайным?</div><div class="confirm-modal-buttons"><button class="confirm-modal-btn confirm" id="confirmYesBtn">Да, выполнить</button><button class="confirm-modal-btn cancel" id="confirmNoBtn">Отмена</button></div></div>`; 
+            document.body.appendChild(modal); 
+            modal.querySelector('#confirmYesBtn').onclick = () => { modal.remove(); if(!currentUserNameFromSheet) return alert('Ошибка: имя не найдено'); completeTaskAsync(taskId, currentUserNameFromSheet, rowIndex, buttonElement); }; 
+            modal.querySelector('#confirmNoBtn').onclick = () => modal.remove(); 
+            modal.onclick = (e) => { if(e.target === modal) modal.remove(); }; 
         }
-    }
-}
-
-function renderManualGroups() {
-    isSearchMode = false;
-    manualContainer.innerHTML = "";
-    const uniqueNames = [...new Set(manualsData.map(m => m.name))];
-    uniqueNames.forEach(n => {
-        const b = document.createElement("button");
-        b.className = "start-btn";
-        b.innerHTML = `<i class="fa-solid fa-book-open"></i><span>${n}</span>`;
-        b.onclick = () => renderManualsByName(n);
-        manualContainer.appendChild(b);
-    });
-    searchInput.value = "";
-    searchResults = [];
-    searchNav.style.display = "none";
-}
-
-function renderManualsByName(name) {
-    isSearchMode = false;
-    manualContainer.innerHTML = "";
-    const cur = manualsData.find(m => m.name === name);
-    if (cur?.pdf) {
-        const pdfBtn = document.createElement("div");
-        pdfBtn.className = "pdf-top-button";
-        pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> СКАЧАТЬ PDF МАНУАЛ';
-        pdfBtn.onclick = () => window.open(cur.pdf, '_blank');
-        manualContainer.appendChild(pdfBtn);
-    }
-    manualsData.filter(m => m.name === name).forEach(m => renderSingleManual(m, manualContainer));
-}
-
-function renderSingleManual(manual, container) {
-    const block = document.createElement("div");
-    block.className = "block";
-    block.dataset.manualName = manual.name;
-    
-    loadPointsForManual(manual.name);
-    
-    const label = document.createElement("div");
-    label.className = "manual-label";
-    const left = document.createElement("div");
-    left.className = "manual-label-left";
-    left.innerHTML = `${manual.name} <i class="fa-regular fa-image"></i>`;
-    left.onclick = () => { if (manual.image) window.open(manual.image); else alert('Нет изображения'); };
-    
-    const actions = document.createElement("div");
-    actions.className = "manual-label-actions";
-    const modeBtn = document.createElement("button");
-    modeBtn.className = "point-mode-btn";
-    modeBtn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
-    modeBtn.title = "Добавить маркер на схему";
-    modeBtn.onclick = (e) => { e.stopPropagation(); togglePointMode(manual.name, modeBtn); };
-    actions.appendChild(modeBtn);
-    
-    label.appendChild(left);
-    label.appendChild(actions);
-    
-    const img = document.createElement("img");
-    img.className = "top-image";
-    img.src = manual.image;
-    img.onerror = () => img.src = 'https://via.placeholder.com/800x400?text=Image+Not+Found';
-    
-    const btns = document.createElement("div");
-    btns.className = "buttons-container";
-    
-    block.appendChild(label);
-    block.appendChild(img);
-    block.appendChild(btns);
-    
-    manual.parts.forEach((part, idx) => {
-        const match = part.match(/\(([^)]+)\)\s+([\d-]+)/);
-        if (match) createPartButton(btns, match[2], match[1]);
-        else createPartButton(btns, part, (idx + 1).toString());
-    });
-    
-    container.appendChild(block);
-    setupImageClickHandler(img, manual.name, btns);
-    
-    if (img.complete) {
-        drawPointsOnImage(manual.name);
-        updatePointsListInUI(manual.name);
-    } else {
-        img.onload = () => {
-            drawPointsOnImage(manual.name);
-            updatePointsListInUI(manual.name);
-        };
-    }
-}
-
-function createPartButton(container, partNum, label) {
-    const btn = document.createElement("div");
-    btn.className = "btn";
-    btn.innerHTML = `<span>${label}</span><span class="detail-number">${partNum}</span>`;
-    btn.onclick = (e) => {
-        if (e.target.classList.contains('detail-number')) {
-            navigator.clipboard.writeText(partNum);
-            const original = e.target.textContent;
-            e.target.textContent = "✓ Скопировано!";
-            setTimeout(() => e.target.textContent = original, 1200);
-            return;
-        }
-        toggleDetail(btn);
-    };
-    container.appendChild(btn);
-}
-
-function toggleDetail(btn) {
-    const next = btn.nextElementSibling;
-    if (next?.classList.contains("detail-info")) {
-        next.remove();
-        btn.classList.remove("active-detail");
-        return;
-    }
-    const cont = btn.parentElement;
-    cont.querySelectorAll(".detail-info").forEach(el => el.remove());
-    cont.querySelectorAll(".btn").forEach(b => b.classList.remove("active-detail"));
-    const part = btn.querySelector(".detail-number").textContent;
-    const data = stockData[part];
-    const info = document.createElement("div");
-    info.className = "detail-info";
-    let html = "";
-    const clubs = ['BB', 'KH', 'SKYMALL', 'STORE'];
-    for (let club of clubs) {
-        const c = data?.[club] || { quantity: 0, image: '' };
-        const q = c.quantity || 0;
-        const hasImg = !!c.image?.trim();
-        html += `<div class="club-row" onclick="showClubImage('${club}','${part}',event)">
-                    <span class="club-name">${club}</span>
-                    <div class="club-info">
-                        <span class="club-quantity ${q === 0 ? 'count-zero' : 'count-positive'}">${q} шт.</span>
-                        ${hasImg ? '<i class="fa-solid fa-image club-image-icon"></i>' : ''}
-                    </div>
-                 </div>`;
-    }
-    info.innerHTML = html;
-    btn.after(info);
-    btn.classList.add("active-detail");
-    setTimeout(() => info.classList.add("open"), 10);
-}
-
-window.showClubImage = (club, part, e) => {
-    e.stopPropagation();
-    const img = stockData[part]?.[club]?.image;
-    if (img && img.trim()) window.open(img.trim(), '_blank');
-    else alert(`Изображение для ${club} / ${part} отсутствует`);
-};
-
-function clearSearch() {
-    searchInput.value = "";
-    searchResults = [];
-    currentIndex = 0;
-    document.querySelectorAll(".search-highlight,.active-highlight").forEach(el => el.classList.remove("search-highlight", "active-highlight"));
-    renderManualGroups();
-    searchNav.style.display = "none";
-}
-
-searchInput.oninput = e => {
-    const term = e.target.value.trim();
-    searchResults = [];
-    currentIndex = 0;
-    document.querySelectorAll(".search-highlight,.active-highlight").forEach(el => el.classList.remove("search-highlight", "active-highlight"));
-    if (!term) { renderManualGroups(); searchNav.style.display = "none"; return; }
-    isSearchMode = true;
-    searchNav.style.display = "flex";
-    manualContainer.innerHTML = "";
-    manualsData.forEach(manual => {
-        if (manual.parts.some(p => p.includes(term))) renderSingleManual(manual, manualContainer);
-    });
-    setTimeout(() => {
-        document.querySelectorAll(".detail-number").forEach(el => {
-            if (el.textContent.includes(term)) {
-                el.classList.add("search-highlight");
-                searchResults.push(el);
-            }
-        });
-        if (searchResults[0]) {
-            searchResults[0].classList.add("active-highlight");
-            searchResults[0].scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-    }, 150);
-};
-
-function nextResult() {
-    if (!searchResults.length) return;
-    if (searchResults[currentIndex]) searchResults[currentIndex].classList.remove("active-highlight");
-    currentIndex = (currentIndex + 1) % searchResults.length;
-    if (searchResults[currentIndex]) {
-        searchResults[currentIndex].classList.add("active-highlight");
-        searchResults[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-}
-
-function prevResult() {
-    if (!searchResults.length) return;
-    if (searchResults[currentIndex]) searchResults[currentIndex].classList.remove("active-highlight");
-    currentIndex = (currentIndex - 1 + searchResults.length) % searchResults.length;
-    if (searchResults[currentIndex]) {
-        searchResults[currentIndex].classList.add("active-highlight");
-        searchResults[currentIndex].scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-}
-
-window.addEventListener('load', () => {
-    const logged = localStorage.getItem('userLoggedIn') === 'true';
-    const email = localStorage.getItem('userEmail');
-    if (logged && email) {
-        loginSection.style.display = 'none';
-        mainContent.style.display = 'block';
-        userInfo.style.display = 'flex';
-        document.getElementById('user-name').textContent = localStorage.getItem('userName') || 'User';
-        document.getElementById('user-email').textContent = email;
-        document.getElementById('user-pic').src = localStorage.getItem('userPic') || '';
-        currentUser = { email: email };
-        loadSheetsAPI().then(() => gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] })).then(() => checkEmailInSheet(email)).catch(() => signOut());
-    } else {
-        loginSection.style.display = 'flex';
-        mainContent.style.display = 'none';
-        userInfo.style.display = 'none';
-        setTimeout(() => loadingScreen.classList.add('fade-out'), 500);
-    }
-    if (google?.accounts?.id) {
-        google.accounts.id.initialize({ client_id: '328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com', callback: handleCredentialResponse });
-    }
-});
-
-// Предотвращение двойного зума на мобильных
-let lastTouchEnd = 0;
-document.addEventListener('touchend', function(e) {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) e.preventDefault();
-    lastTouchEnd = now;
-}, false);
-</script>
+        
+        function submitTaskWithConfirm(event, taskId, rowIndex, buttonElement) { event.preventDefault(); event.stopPropagation(); showConfirmModal(taskId, rowIndex, buttonElement); }
+        
+        function openDriveLink(link) { if(link) { const driveMatch = link.match(/\/d\/([^\/]+)/); const finalUrl = driveMatch ? `https://drive.google.com/uc?export=view&id=${driveMatch[1]}` : link; window.open(finalUrl, '_blank'); } }
+        
+        // Рендер с сохранением порядка (выполненные не опускаются)
+        function renderJournalCards(data) { const cont = document.getElementById('journal-cards'); if(!data || !data.length) { cont.innerHTML = `<div class="task-card"><div>Нет данных</div></div>`; totalJournalPages=1; currentJournalPage=1; updatePagination('journal'); return; } const sorted = [...data]; totalJournalPages = Math.ceil(sorted.length/CARDS_PER_PAGE); if(currentJournalPage>totalJournalPages) currentJournalPage=1; const current = getCurrentPageData(sorted, currentJournalPage); let html=''; current.forEach((t,idx)=>{ const row = t.rowIndex || (idx+2); const hasLink = t.driveLink && t.driveLink.trim(); const tid = t.id || t.driveLink || ''; if(!t.isCompleted) { html+=`<div class="task-card pending"><div class="task-header"><div class="task-title">${escapeHtml(t.task)}</div></div><div class="card-content"><div class="content-row"><span class="row-label">Дата появления:</span><span class="row-value">${t.createdDate||'-'}</span></div><div class="content-row"><span class="row-label">Дата выполнения:</span><span class="row-value">${t.completedDate||'-'}</span></div><div class="content-row"><span class="row-label">Выполнил:</span><span class="row-value">-</span></div></div><div class="buttons-container">${hasLink ? `<a href="#" onclick="openDriveLink('${escapeHtml(t.driveLink)}')" class="schema-button"><i class="fas fa-file-alt"></i>ОТКРЫТЬ ЗАДАЧУ</a>` : '<div class="no-open">Недоступно</div>'}<button class="submit-btn" onclick="submitTaskWithConfirm(event,'${escapeHtml(tid)}',${row}, this)"><i class="fas fa-paper-plane"></i>ВЫПОЛНИТЬ</button></div></div>`; } else { html+=`<div class="task-card completed"><div class="task-header"><div class="task-title">${escapeHtml(t.task)}</div></div><div class="card-content"><div class="content-row"><span class="row-label">Дата появления:</span><span class="row-value">${t.createdDate||'-'}</span></div><div class="content-row"><span class="row-label">Дата выполнения:</span><span class="row-value">${t.completedDate}</span></div><div class="content-row"><span class="row-label">Выполнил:</span><span class="row-value"><span class="executor-name">${escapeHtml(t.executor)}</span></span></div></div><div class="buttons-container">${hasLink ? `<a href="#" onclick="openDriveLink('${escapeHtml(t.driveLink)}')" class="schema-button"><i class="fas fa-file-alt"></i>ОТКРЫТЬ ЗАДАЧУ</a>` : '<div class="no-open">Недоступно</div>'}<div class="submitted-text"><i class="fas fa-check-circle"></i>ВЫПОЛНЕНО</div></div></div>`; } }); cont.innerHTML = html; updatePagination('journal'); }
+        function renderInstructorCards(data) { const cont = document.getElementById('instructor-cards'); if(!data || !data.length) { cont.innerHTML = `<div class="task-card"><div>Нет данных</div></div>`; totalInstructorPages=1; currentInstructorPage=1; updatePagination('instructor'); return; } const sorted = [...data]; totalInstructorPages = Math.ceil(sorted.length/CARDS_PER_PAGE); if(currentInstructorPage>totalInstructorPages) currentInstructorPage=1; const current = getCurrentPageData(sorted, currentInstructorPage); let html=''; current.forEach((t,idx)=>{ const row = t.rowIndex || (idx+2); const hasLink = t.driveLink && t.driveLink.trim(); const tid = t.id || t.driveLink || ''; if(!t.isCompleted) { html+=`<div class="task-card pending"><div class="task-header"><div class="task-title">${escapeHtml(t.task)}</div></div><div class="card-content"><div class="content-row"><span class="row-label">Дата появления:</span><span class="row-value">${t.createdDate||'-'}</span></div><div class="content-row"><span class="row-label">Дата выполнения:</span><span class="row-value">${t.completedDate||'-'}</span></div><div class="content-row"><span class="row-label">Выполнил:</span><span class="row-value">-</span></div></div><div class="buttons-container">${hasLink ? `<a href="#" onclick="openDriveLink('${escapeHtml(t.driveLink)}')" class="schema-button"><i class="fas fa-file-alt"></i>ОТКРЫТЬ ЗАДАЧУ</a>` : '<div class="no-open">Недоступно</div>'}<button class="submit-btn" onclick="submitTaskWithConfirm(event,'${escapeHtml(tid)}',${row}, this)"><i class="fas fa-paper-plane"></i>ВЫПОЛНИТЬ</button></div></div>`; } else { html+=`<div class="task-card completed"><div class="task-header"><div class="task-title">${escapeHtml(t.task)}</div></div><div class="card-content"><div class="content-row"><span class="row-label">Дата появления:</span><span class="row-value">${t.createdDate||'-'}</span></div><div class="content-row"><span class="row-label">Дата выполнения:</span><span class="row-value">${t.completedDate}</span></div><div class="content-row"><span class="row-label">Выполнил:</span><span class="row-value"><span class="executor-name">${escapeHtml(t.executor)}</span></span></div></div><div class="buttons-container">${hasLink ? `<a href="#" onclick="openDriveLink('${escapeHtml(t.driveLink)}')" class="schema-button"><i class="fas fa-file-alt"></i>ОТКРЫТЬ ЗАДАЧУ</a>` : '<div class="no-open">Недоступно</div>'}<div class="submitted-text"><i class="fas fa-check-circle"></i>ВЫПОЛНЕНО</div></div></div>`; } }); cont.innerHTML = html; updatePagination('instructor'); }
+        function renderEngineerCards(data) { const cont = document.getElementById('engineer-cards'); if(!data || !data.length) { cont.innerHTML = `<div class="task-card"><div>Нет данных</div></div>`; totalEngineerPages=1; currentEngineerPage=1; updatePagination('engineer'); return; } const sorted = [...data]; totalEngineerPages = Math.ceil(sorted.length/CARDS_PER_PAGE); if(currentEngineerPage>totalEngineerPages) currentEngineerPage=1; const current = getCurrentPageData(sorted, currentEngineerPage); let html=''; current.forEach((t,idx)=>{ const row = t.rowIndex || (idx+2); const hasLink = t.driveLink && t.driveLink.trim(); const tid = t.id || t.driveLink || ''; if(!t.isCompleted) { html+=`<div class="task-card pending"><div class="task-header"><div class="task-title">${escapeHtml(t.task)}</div></div><div class="card-content"><div class="content-row"><span class="row-label">Дата появления:</span><span class="row-value">${t.createdDate||'-'}</span></div><div class="content-row"><span class="row-label">Дата выполнения:</span><span class="row-value">${t.completedDate||'-'}</span></div><div class="content-row"><span class="row-label">Выполнил:</span><span class="row-value">-</span></div></div><div class="buttons-container">${hasLink ? `<a href="#" onclick="openDriveLink('${escapeHtml(t.driveLink)}')" class="schema-button"><i class="fas fa-file-alt"></i>ОТКРЫТЬ ЗАДАЧУ</a>` : '<div class="no-open">Недоступно</div>'}<button class="submit-btn" onclick="submitTaskWithConfirm(event,'${escapeHtml(tid)}',${row}, this)"><i class="fas fa-paper-plane"></i>ВЫПОЛНИТЬ</button></div></div>`; } else { html+=`<div class="task-card completed"><div class="task-header"><div class="task-title">${escapeHtml(t.task)}</div></div><div class="card-content"><div class="content-row"><span class="row-label">Дата появления:</span><span class="row-value">${t.createdDate||'-'}</span></div><div class="content-row"><span class="row-label">Дата выполнения:</span><span class="row-value">${t.completedDate}</span></div><div class="content-row"><span class="row-label">Выполнил:</span><span class="row-value"><span class="executor-name">${escapeHtml(t.executor)}</span></span></div></div><div class="buttons-container">${hasLink ? `<a href="#" onclick="openDriveLink('${escapeHtml(t.driveLink)}')" class="schema-button"><i class="fas fa-file-alt"></i>ОТКРЫТЬ ЗАДАЧУ</a>` : '<div class="no-open">Недоступно</div>'}<div class="submitted-text"><i class="fas fa-check-circle"></i>ВЫПОЛНЕНО</div></div></div>`; } }); cont.innerHTML = html; updatePagination('engineer'); }
+        
+        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
+        
+        function getCurrentPageData(data, page) { const start = (page-1)*CARDS_PER_PAGE; return data.slice(start, start+CARDS_PER_PAGE); }
+        function updatePagination(type) { const pag = document.getElementById(`${type}-pagination`); if(!pag) return; let cur, tot; if(type==='journal') { cur=currentJournalPage; tot=totalJournalPages; } else if(type==='instructor') { cur=currentInstructorPage; tot=totalInstructorPages; } else { cur=currentEngineerPage; tot=totalEngineerPages; } let html = ''; html += `<button class="page-btn" onclick="goToPage('${type}', 1)" ${cur===1 ? 'disabled' : ''}><i class="fas fa-angle-double-left"></i></button>`; html += `<button class="page-btn" onclick="changePage('${type}', -1)" ${cur===1 ? 'disabled' : ''}><i class="fas fa-angle-left"></i></button>`; html += `<span class="page-info">${cur} / ${tot}</span>`; html += `<button class="page-btn" onclick="changePage('${type}', 1)" ${cur===tot ? 'disabled' : ''}><i class="fas fa-angle-right"></i></button>`; html += `<button class="page-btn" onclick="goToPage('${type}', ${tot})" ${cur===tot ? 'disabled' : ''}><i class="fas fa-angle-double-right"></i></button>`; pag.innerHTML = html; pag.style.display = tot>1 ? 'flex' : 'none'; }
+        function goToPage(type, page) { if(type==='journal' && page>=1 && page<=totalJournalPages && page!==currentJournalPage) { currentJournalPage=page; renderJournalCards(journalData); updatePagination('journal'); scrollToTop(); } else if(type==='instructor' && page>=1 && page<=totalInstructorPages && page!==currentInstructorPage) { currentInstructorPage=page; renderInstructorCards(instructorData); updatePagination('instructor'); scrollToTop(); } else if(type==='engineer' && page>=1 && page<=totalEngineerPages && page!==currentEngineerPage) { currentEngineerPage=page; renderEngineerCards(engineerData); updatePagination('engineer'); scrollToTop(); } }
+        function changePage(type, dir) { if(type==='journal') goToPage('journal', currentJournalPage+dir); else if(type==='instructor') goToPage('instructor', currentInstructorPage+dir); else goToPage('engineer', currentEngineerPage+dir); }
+        
+        function initDatePicker() { if(datePicker) datePicker.destroy(); const input = document.getElementById('date-filter-input'); datePicker = flatpickr(input, { locale:"ru", dateFormat:"d.m.Y", onChange: (dates,dateStr) => { if(dateStr) { const active = document.querySelector('.tab-content.active'); if(active?.id === 'tab1') filterJournalByDate(dateStr); else if(active?.id === 'tab2') filterInstructorByDate(dateStr); else if(active?.id === 'tab3') filterEngineerByDate(dateStr); } else { clearDateFilter(); } } }); input.value = ''; }
+        function filterJournalByDate(date) { if(!date) { isFilterActive=false; currentFilterDate=''; journalData = originalJournalData.filter(t => ['PS','МЕХ','ps','мех'].some(k=> (t.task||'').toLowerCase().includes(k.toLowerCase()))); currentJournalPage=1; renderJournalCards(journalData); updateTabBadges(); return; } isFilterActive=true; currentFilterDate=date; journalData = originalJournalData.filter(t => t.completedDate===date && ['PS','МЕХ','ps','мех'].some(k=> (t.task||'').toLowerCase().includes(k.toLowerCase()))); currentJournalPage=1; renderJournalCards(journalData); updateTabBadges(); }
+        function filterInstructorByDate(date) { if(!date) { isFilterActive=false; currentFilterDate=''; instructorData = originalJournalData.filter(t => ['ИНСТ','инст'].some(k=> (t.task||'').toLowerCase().includes(k.toLowerCase()))); currentInstructorPage=1; renderInstructorCards(instructorData); updateTabBadges(); return; } isFilterActive=true; currentFilterDate=date; instructorData = originalJournalData.filter(t => t.completedDate===date && ['ИНСТ','инст'].some(k=> (t.task||'').toLowerCase().includes(k.toLowerCase()))); currentInstructorPage=1; renderInstructorCards(instructorData); updateTabBadges(); }
+        function filterEngineerByDate(date) { if(!date) { isFilterActive=false; currentFilterDate=''; engineerData = originalJournalData.filter(t => (t.task||'').toLowerCase().includes('клуб')); currentEngineerPage=1; renderEngineerCards(engineerData); updateTabBadges(); return; } isFilterActive=true; currentFilterDate=date; engineerData = originalJournalData.filter(t => t.completedDate===date && (t.task||'').toLowerCase().includes('клуб')); currentEngineerPage=1; renderEngineerCards(engineerData); updateTabBadges(); }
+        function clearDateFilter() { const inp = document.getElementById('date-filter-input'); if(inp) inp.value = ''; const active = document.querySelector('.tab-content.active'); if(active?.id === 'tab1') filterJournalByDate(''); else if(active?.id === 'tab2') filterInstructorByDate(''); else if(active?.id === 'tab3') filterEngineerByDate(''); }
+        
+        async function initializeApp() { showLoader(); document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); const id=btn.getAttribute('data-tab'); document.getElementById(id).classList.add('active'); if(id==='tab2'){ currentInstructorPage=1; renderInstructorCards(instructorData); } else if(id==='tab1'){ currentJournalPage=1; renderJournalCards(journalData); } else { currentEngineerPage=1; renderEngineerCards(engineerData); } if(isFilterActive && currentFilterDate) { if(id==='tab1') filterJournalByDate(currentFilterDate); else if(id==='tab2') filterInstructorByDate(currentFilterDate); else filterEngineerByDate(currentFilterDate); } scrollToTop(); })); initDatePicker(); await loadAllTasks(); renderJournalCards(journalData); renderInstructorCards(instructorData); renderEngineerCards(engineerData); updateTabBadges(); setTimeout(()=>hideLoader(),300); setInterval(async () => { try { await loadAllTasks(); const active = document.querySelector('.tab-content.active'); if(active?.id==='tab2') renderInstructorCards(instructorData); else if(active?.id==='tab1') renderJournalCards(journalData); else if(active?.id==='tab3') renderEngineerCards(engineerData); updateTabBadges(); } catch(e) { console.warn(e); } }, 60000); setTimeout(()=>isInitialLoad=false,1000); }
+        
+        window.addEventListener('load',()=>{ const logged = localStorage.getItem('userLoggedIn')==='true', email=localStorage.getItem('userEmail'), name=localStorage.getItem('userName'), nameSheet=localStorage.getItem('userNameFromSheet'), pic=localStorage.getItem('userPic'); if(logged && email) { loginSection.style.display='none'; mainContent.style.display='block'; currentUser={ email, name, picture:pic }; currentUserNameFromSheet = nameSheet || name; updateUserAvatar(currentUser); showLoading(true); loadSheetsAPI().then(()=>gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs:['https://sheets.googleapis.com/$discovery/rest?version=v4'] })).then(()=>checkEmailInSheet(email)).catch(()=>signOut()); } else { loginSection.style.display='flex'; mainContent.style.display='none'; setTimeout(()=>loadingScreen.classList.add('fade-out'),500); } });
+        window.openDriveLink = openDriveLink; window.submitTaskWithConfirm = submitTaskWithConfirm; window.goToPage = goToPage; window.changePage = changePage; window.toggleUserDropdown = toggleUserDropdown; window.signOut = signOut;
+    </script>
 </body>
 </html>
