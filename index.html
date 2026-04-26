@@ -22,6 +22,7 @@ header {
 }
 .logo img { width: 40px; height: 40px; cursor: pointer; }
 .site-name { flex: 1; text-align: center; font-size: 18px; font-weight: bold; }
+.search-container { position: relative; }
 .search-container input { padding: 6px 30px 6px 10px; border-radius: 6px; border: none; font-size: 16px; width: 140px; }
 .search-container i { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: #1f2937; pointer-events: none; }
 #manualContainer { max-width: 1200px; margin: 0 auto; width: 100%; }
@@ -37,10 +38,13 @@ header {
   display: flex; align-items: center; justify-content: space-between;
 }
 .manual-label-left { display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1; }
+.manual-label-left:hover { opacity: 0.8; }
 .manual-label-actions button {
   background: none; border: none; color: white; cursor: pointer; padding: 6px 10px;
-  border-radius: 6px; font-size: 14px;
+  border-radius: 6px; font-size: 14px; transition: all 0.2s;
 }
+.manual-label-actions button:hover { background: rgba(255,255,255,0.2); }
+.manual-label-actions button:active { transform: scale(0.95); }
 .point-mode-btn.active { background: #dc143c !important; color: white; }
 .top-image { width: 100%; height: auto; display: block; cursor: pointer; }
 .image-wrapper { position: relative; display: inline-block; width: 100%; }
@@ -50,79 +54,147 @@ header {
 }
 .buttons-container { display: none; flex-direction: column; }
 .btn {
-  display: flex; justify-content: space-between; padding: 10px 16px; border-top: 1px solid #eee;
-  cursor: pointer; font-weight: 500; background: white;
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;
+  border-top: 1px solid #eee; cursor: pointer; font-weight: 500; background: white;
+  transition: background 0.2s;
 }
-.btn.active-detail { background: #fef2f2; border-left: 2px solid #dc143c; }
-.detail-info { overflow: hidden; max-height: 0; opacity: 0; transition: 0.3s; background: #fff; border-left: 2px solid #dc143c; }
+.btn:hover { background: #f9f9f9; }
+.btn.active-detail { background: #fef2f2; border-left: 3px solid #dc143c; }
+.detail-number { font-family: monospace; font-size: 14px; color: #dc143c; font-weight: 600; }
+.detail-info { overflow: hidden; max-height: 0; opacity: 0; transition: 0.3s ease; background: #fff; border-left: 3px solid #dc143c; }
 .detail-info.open { max-height: 500px; opacity: 1; }
 .club-row {
   display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;
-  border-top: 1px solid #f3f4f6; cursor: pointer;
+  border-top: 1px solid #f3f4f6; cursor: pointer; transition: background 0.2s;
 }
 .club-row:hover { background: #f5f5f5; }
 .club-name { font-weight: 600; }
+.club-info { display: flex; align-items: center; gap: 12px; }
 .club-quantity { font-weight: bold; }
 .count-zero { color: #dc143c; }
 .count-positive { color: #16a34a; }
+.club-image-icon { color: #dc143c; font-size: 16px; }
 .search-highlight { background: #ffe4e6; }
 .active-highlight { background: #ffb6b9; }
 .start-btn {
   display: flex; align-items: center; width: 100%; padding: 18px 20px;
   background: #1f2937; color: white; font-size: 16px; font-weight: 600;
   border: none; cursor: pointer; border-bottom: 1px solid #374151;
+  transition: background 0.2s;
 }
+.start-btn:hover { background: #374151; }
 .start-btn i { margin-right: 15px; font-size: 22px; width: 24px; }
 .search-nav-bottom {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   display: none; gap: 10px; z-index: 1000; background: #1f2937;
-  padding: 8px 16px; border-radius: 40px;
+  padding: 8px 16px; border-radius: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
-.search-nav-bottom button { background: transparent; color: white; border: none; width: 44px; height: 44px; cursor: pointer; font-size: 18px; border-radius: 50%; }
+.search-nav-bottom button {
+  background: transparent; color: white; border: none; width: 44px; height: 44px;
+  cursor: pointer; font-size: 18px; border-radius: 50%; transition: background 0.2s;
+}
+.search-nav-bottom button:hover { background: #374151; }
+.search-nav-bottom button:active { transform: scale(0.95); }
 .shop-fab-left {
   position: fixed; bottom: 20px; left: 20px; width: 54px; height: 54px;
   background: #dc143c; color: white; border-radius: 50%; display: flex;
-  align-items: center; justify-content: center; cursor: pointer; z-index: 2001; font-size: 20px;
+  align-items: center; justify-content: center; cursor: pointer; z-index: 2001;
+  font-size: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: transform 0.1s;
 }
+.shop-fab-left:active { transform: scale(0.95); }
 .shop-fab-right {
   position: fixed; bottom: 20px; right: 20px; width: 54px; height: 54px;
   background: #1f2937; color: white; border-radius: 50%; display: flex;
-  align-items: center; justify-content: center; cursor: pointer; z-index: 2001; font-size: 20px;
+  align-items: center; justify-content: center; cursor: pointer; z-index: 2001;
+  font-size: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: transform 0.1s;
 }
+.shop-fab-right:active { transform: scale(0.95); }
 .loading-screen {
   position: fixed; inset: 0; background: #1f2937; display: flex;
   justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease;
 }
 .loading-screen.fade-out { opacity: 0; pointer-events: none; }
-.logo-wrapper { position: relative; width: 160px; height: 160px; }
+.logo-wrapper { position: relative; width: 160px; height: 160px; display: flex; justify-content: center; align-items: center; }
 .glow-ring {
   position: absolute; width: 80px; height: 80px; border-radius: 100%;
   background: conic-gradient(#dc143c, transparent 100%); animation: spin 5s linear infinite; filter: blur(20px);
 }
+.loading-screen img { width: 120px; z-index: 2; }
 @keyframes spin { to { transform: rotate(365deg); } }
 #login-section { display: none; justify-content: center; align-items: center; min-height: calc(100vh - 70px); padding: 20px; }
 #login-container { background: white; padding: 30px 25px; border-radius: 24px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-#user-info { background: white; display: none; align-items: center; gap: 12px; padding: 12px 15px; margin: 10px 15px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
-#user-pic { border-radius: 12px; width: 44px; height: 44px; }
+.login-icon { width: 50px; height: 50px; background: #f1f5f9; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.login-icon i { font-size: 24px; color: #dc143c; }
+#login-container h2 { margin: 15px 0 5px; }
+.login-subtitle { color: #64748b; font-size: 13px; margin-bottom: 25px; }
+#user-info {
+  background: white; display: none; align-items: center; gap: 12px;
+  padding: 12px 15px; margin: 10px 15px; border-radius: 16px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); position: relative; z-index: 999;
+}
+#user-pic { border-radius: 12px; width: 44px; height: 44px; object-fit: cover; }
 .user-details { flex-grow: 1; }
-#user-name { margin: 0; font-weight: 700; }
-#user-email { margin: 0; font-size: 12px; color: #64748b; }
-#logout-btn { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; }
+#user-name { margin: 0; font-weight: 700; font-size: 14px; }
+#user-email { margin: 0; font-size: 12px; color: #64748b; word-break: break-all; }
+#logout-btn { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+#logout-btn:hover { background: #dc143c; color: white; }
 #main-content { display: none; }
 .loading-spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(220,20,60,0.2); border-radius: 50%; border-top-color: #dc143c; animation: spin 1s linear infinite; }
-.point-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1f2937; color: white; padding: 8px 16px; border-radius: 40px; font-size: 13px; z-index: 2000; animation: fadeOut 2s ease forwards; white-space: nowrap; }
-.point-mode-indicator { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #dc143c; color: white; padding: 6px 16px; border-radius: 40px; font-size: 13px; z-index: 2000; display: none; gap: 8px; white-space: nowrap; }
-@keyframes fadeOut { 0% { opacity: 0; transform: translateX(-50%) translateY(10px); } 15% { opacity: 1; transform: translateX(-50%) translateY(0); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) translateY(10px); } }
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 3000; }
-.modal-card { background: white; max-width: 90%; max-height: 90%; border-radius: 20px; padding: 20px; text-align: center; overflow: auto; min-width: 280px; }
-.modal-card img { max-width: 100%; max-height: 50vh; border-radius: 12px; margin-top: 15px; }
-.modal-close { margin-top: 15px; background: #dc143c; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; }
-.points-management-section { border-top: 1px solid #eee; background: #f8f9fa; padding: 8px 12px; }
-.point-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 13px; border-bottom: 1px solid #e5e7eb; }
-.point-number { color: #dc143c; font-weight: 600; cursor: pointer; }
-.point-number:hover { text-decoration: underline; }
-.delete-point { background: none; border: none; color: #9ca3af; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
-.delete-point:hover { color: #dc143c; }
+.point-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: #1f2937; color: white; padding: 8px 16px; border-radius: 40px;
+  font-size: 13px; z-index: 2000; animation: fadeOut 2s ease forwards;
+  white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.point-mode-indicator {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+  background: #dc143c; color: white; padding: 8px 20px; border-radius: 40px;
+  font-size: 13px; z-index: 2000; display: none; gap: 8px;
+  white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  font-weight: 500;
+}
+@keyframes fadeOut {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85); display: flex; justify-content: center;
+  align-items: center; z-index: 3000; backdrop-filter: blur(3px);
+}
+.modal-card {
+  background: white; max-width: 90%; max-height: 85%; border-radius: 24px;
+  padding: 20px; text-align: center; overflow: auto; min-width: 280px;
+  box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+}
+.modal-card h3 { margin: 0 0 15px 0; color: #1f2937; }
+.modal-card img { max-width: 100%; max-height: 50vh; border-radius: 12px; margin-top: 15px; border: 1px solid #e5e7eb; }
+.modal-close {
+  margin-top: 20px; background: #dc143c; color: white; border: none;
+  padding: 10px 24px; border-radius: 40px; cursor: pointer; font-size: 14px;
+  font-weight: 600; transition: transform 0.1s;
+}
+.modal-close:active { transform: scale(0.97); }
+.points-management-section {
+  border-top: 1px solid #eee; background: #f8f9fa; padding: 10px 12px;
+}
+.points-management-section > div:first-child { margin-bottom: 8px; }
+.point-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; font-size: 13px; border-bottom: 1px solid #e5e7eb;
+}
+.point-number {
+  color: #dc143c; font-weight: 600; cursor: pointer; padding: 4px 8px;
+  border-radius: 6px; transition: background 0.2s;
+}
+.point-number:hover { background: #fee2e2; text-decoration: none; }
+.delete-point {
+  background: none; border: none; color: #9ca3af; cursor: pointer;
+  padding: 6px 10px; border-radius: 6px; transition: all 0.2s;
+}
+.delete-point:hover { color: #dc143c; background: #fee2e2; }
 </style>
 </head>
 <body>
@@ -151,7 +223,10 @@ header {
   <header>
     <div class="logo" onclick="window.location.href='https://smart-bowling.github.io/SMB/'"><img src="https://i.postimg.cc/wjGzSY92/1.png" alt="Logo"></div>
     <div class="site-name">MANUALS</div>
-    <div class="search-container"><input type="text" id="searchInput" placeholder="Поиск детали"><i class="fa-solid fa-magnifying-glass"></i></div>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Поиск детали">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </div>
   </header>
   <div id="manualContainer"></div>
   <div class="search-nav-bottom" id="searchNav">
@@ -169,8 +244,8 @@ header {
 
 <script>
 // ====================== СИСТЕМА МАРКЕРОВ ======================
-let allPoints = {};      // { manualName: [{x, y, number}] }
-let activePointMode = {}; // { manualName: true/false }
+let allPoints = {};
+let activePointMode = {};
 
 function loadPointsForManual(manualName) {
     const saved = localStorage.getItem(`points_${manualName}`);
@@ -234,11 +309,11 @@ function drawPointsOnImage(manualName) {
     points.forEach(point => {
         const x = point.x * rect.width;
         const y = point.y * rect.height;
-        let radius = rect.width < 500 ? 10 : (rect.width < 800 ? 12 : 14);
+        let radius = rect.width < 500 ? 11 : (rect.width < 800 ? 13 : 15);
         
         ctx.beginPath();
-        ctx.arc(x, y, radius + 2, 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(220, 20, 60, 0.3)';
+        ctx.arc(x, y, radius + 3, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(220, 20, 60, 0.35)';
         ctx.fill();
         
         ctx.beginPath();
@@ -246,10 +321,10 @@ function drawPointsOnImage(manualName) {
         ctx.fillStyle = '#dc143c';
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.stroke();
         
-        ctx.font = `bold ${Math.max(11, Math.min(16, radius))}px "Segoe UI"`;
+        ctx.font = `bold ${Math.max(12, Math.min(17, radius))}px "Segoe UI", system-ui`;
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -269,14 +344,14 @@ function updatePointsListInUI(manualName) {
     
     const section = document.createElement('div');
     section.className = 'points-management-section';
-    section.innerHTML = `<div style="font-size:12px; font-weight:600; color:#6b7280; margin-bottom:8px;"><i class="fa-solid fa-location-dot"></i> Маркеры на схеме (нажмите на номер для инфо):</div>`;
+    section.innerHTML = `<div style="font-size:12px; font-weight:600; color:#6b7280;"><i class="fa-solid fa-location-dot"></i> Маркеры на схеме (нажмите на номер для инфо):</div>`;
     
     points.forEach((point, idx) => {
         const row = document.createElement('div');
         row.className = 'point-item';
         const numSpan = document.createElement('span');
         numSpan.className = 'point-number';
-        numSpan.innerHTML = `📍 №${point.number}`;
+        numSpan.innerHTML = `<i class="fa-solid fa-map-pin"></i> №${point.number}`;
         numSpan.onclick = (e) => {
             e.stopPropagation();
             showMarkerInfo(manualName, point.number);
@@ -284,9 +359,10 @@ function updatePointsListInUI(manualName) {
         const delBtn = document.createElement('button');
         delBtn.className = 'delete-point';
         delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+        delBtn.title = 'Удалить маркер';
         delBtn.onclick = (e) => {
             e.stopPropagation();
-            if (confirm(`Удалить маркер №${point.number}?`)) {
+            if (confirm(`Удалить маркер детали №${point.number}?`)) {
                 deletePointFromManual(manualName, idx);
             }
         };
@@ -304,29 +380,43 @@ function showMarkerInfo(manualName, partNumber) {
     let totalQty = 0;
     let anyImage = '';
     
-    let html = `<div style="font-family:sans-serif; text-align:left;"><h3 style="margin:0 0 15px 0; color:#1f2937; text-align:center;">🔧 Деталь №${partNumber}</h3>`;
+    let html = `<div style="font-family:sans-serif; text-align:left;">
+                    <h3 style="margin:0 0 15px 0; color:#1f2937; text-align:center; border-bottom:2px solid #dc143c; padding-bottom:10px;">
+                        <i class="fa-solid fa-cube"></i> Деталь №${partNumber}
+                    </h3>`;
     
-    for (let club of ['BB', 'KH', 'SKYMALL', 'STORE']) {
-        let q = partData[club]?.quantity || 0;
+    const clubs = [
+        { name: 'BB', label: 'BB Bowling' },
+        { name: 'KH', label: 'KH Pro Shop' },
+        { name: 'SKYMALL', label: 'SkyMall' },
+        { name: 'STORE', label: 'Магазин' }
+    ];
+    
+    for (let club of clubs) {
+        let q = partData[club.name]?.quantity || 0;
         totalQty += q;
-        if (partData[club]?.image && partData[club].image.trim()) anyImage = partData[club].image;
-        html += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
-                    <span><strong>${club}:</strong></span>
-                    <span style="font-weight:bold; ${q === 0 ? 'color:#dc143c' : 'color:#16a34a'}">${q} шт.</span>
+        if (partData[club.name]?.image && partData[club.name].image.trim()) anyImage = partData[club.name].image;
+        html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f0f0f0;">
+                    <span style="font-weight:600;">${club.label}:</span>
+                    <span style="font-weight:bold; font-size:16px; ${q === 0 ? 'color:#dc143c' : 'color:#16a34a'}">${q} шт.</span>
                  </div>`;
     }
     
-    html += `<div style="margin-top:12px; padding:8px 0; font-weight:bold; text-align:center; background:#f0f0f0; border-radius:8px;">📦 Всего: ${totalQty} шт.</div>`;
+    html += `<div style="margin-top:15px; padding:10px; background:#f0f9ff; border-radius:12px; text-align:center;">
+                <strong>📦 Общее количество: ${totalQty} шт.</strong>
+             </div>`;
     
     if (anyImage) {
-        html += `<img src="${anyImage}" style="max-width:100%; margin-top:15px; border-radius:12px; border:1px solid #ddd;" onerror="this.style.display='none'">`;
+        html += `<img src="${anyImage}" style="max-width:100%; margin-top:18px; border-radius:12px; border:1px solid #ddd; box-shadow:0 2px 8px rgba(0,0,0,0.1);" onerror="this.style.display='none'">`;
     } else {
-        html += `<div style="margin-top:15px; color:#888; text-align:center;"><i class="fa-regular fa-image"></i> Фото отсутствует</div>`;
+        html += `<div style="margin-top:18px; padding:12px; color:#888; text-align:center; background:#f9f9f9; border-radius:12px;">
+                    <i class="fa-regular fa-image" style="font-size:24px;"></i><br>Фото отсутствует
+                 </div>`;
     }
     
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
-    modal.innerHTML = `<div class="modal-card">${html}<button class="modal-close">Закрыть</button></div>`;
+    modal.innerHTML = `<div class="modal-card">${html}<button class="modal-close"><i class="fa-regular fa-circle-check"></i> Закрыть</button></div>`;
     document.body.appendChild(modal);
     modal.querySelector('.modal-close').onclick = () => modal.remove();
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
@@ -340,7 +430,6 @@ function togglePointMode(manualName, btn) {
         document.getElementById('pointModeIndicator').style.display = 'none';
         showToast('Режим добавления маркеров выключен');
     } else {
-        // Выключаем режим для всех других мануалов
         for (let key in activePointMode) {
             if (activePointMode[key]) {
                 activePointMode[key] = false;
@@ -360,7 +449,7 @@ function togglePointMode(manualName, btn) {
                 btn.classList.remove('active');
                 btn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
                 document.getElementById('pointModeIndicator').style.display = 'none';
-                showToast('Режим автоматически выключен');
+                showToast('Режим добавления маркеров автоматически выключен');
             }
         }, 30000);
     }
@@ -371,7 +460,7 @@ function showToast(msg) {
     t.className = 'point-toast';
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2000);
+    setTimeout(() => t.remove(), 2500);
 }
 
 function setupImageClickHandler(img, manualName, buttonsContainer) {
@@ -396,32 +485,29 @@ function setupImageClickHandler(img, manualName, buttonsContainer) {
             const partNum = prompt('Введите номер детали для маркера:', '');
             if (partNum && partNum.trim()) {
                 addPointToManual(manualName, px, py, partNum.trim());
-                showToast(`✓ Маркер ${partNum} добавлен`);
+                showToast(`✓ Маркер детали №${partNum} добавлен`);
             }
             return true;
         }
         return false;
     };
     
-    // Клик для добавления маркера ИЛИ открытия списка деталей
     img.onclick = (e) => {
         e.stopPropagation();
         if (activePointMode[manualName]) {
             addPointInteraction(e.clientX, e.clientY);
         } else {
-            // Открываем/закрываем список деталей
             if (buttonsContainer) {
                 buttonsContainer.style.display = buttonsContainer.style.display === "flex" ? "none" : "flex";
             }
         }
     };
     
-    // Поддержка touch для мобильных
     img.addEventListener('touchstart', (e) => {
         if (activePointMode[manualName]) {
             e.preventDefault();
-            const t = e.touches[0];
-            addPointInteraction(t.clientX, t.clientY);
+            const touch = e.touches[0];
+            addPointInteraction(touch.clientX, touch.clientY);
         }
     });
     
@@ -457,7 +543,7 @@ const userInfo = document.getElementById("user-info");
 const searchNav = document.getElementById("searchNav");
 
 function openShopSearch() {
-    const pn = prompt("Введите номер детали:");
+    const pn = prompt("Введите номер детали для поиска в магазине:", "");
     if (pn && pn.trim()) {
         const form = document.createElement('form');
         form.method = 'get';
@@ -492,7 +578,7 @@ function showLoading(show) {
     const div = document.getElementById('login-container');
     if (show) {
         if (!div.hasAttribute('data-original')) div.setAttribute('data-original', div.innerHTML);
-        div.innerHTML = '<div style="padding:40px; text-align:center;"><div class="loading-spinner"></div><br><span>Проверка доступа...</span></div>';
+        div.innerHTML = '<div style="padding:40px; text-align:center;"><div class="loading-spinner"></div><br><span style="color:#64748b;">Проверка доступа...</span></div>';
     } else if (div.getAttribute('data-original') && loginSection.style.display !== 'none') {
         div.innerHTML = div.getAttribute('data-original');
         if (window.google?.accounts?.id) {
@@ -523,7 +609,7 @@ async function checkEmailInSheet(email) {
         }
     }
     if (ok) loginUser(currentUser);
-    else { showLoading(false); alert('Доступ запрещен'); }
+    else { showLoading(false); alert('Доступ запрещен: Ваш email не найден в таблице'); }
 }
 
 function loginUser(p) {
@@ -535,6 +621,8 @@ function loginUser(p) {
     document.getElementById('user-email').textContent = p.email;
     localStorage.setItem('userLoggedIn', 'true');
     localStorage.setItem('userEmail', p.email);
+    localStorage.setItem('userName', p.name);
+    localStorage.setItem('userPic', p.picture);
     loadFromGoogleSheets();
     showLoading(false);
 }
@@ -564,8 +652,9 @@ async function loadFromGoogleSheets() {
         renderManualGroups();
         setTimeout(() => loadingScreen.classList.add('fade-out'), 500);
     } catch (e) {
+        console.error(e);
         loadingScreen.classList.add('fade-out');
-        manualContainer.innerHTML = '<div style="padding:20px;">Ошибка загрузки</div>';
+        manualContainer.innerHTML = '<div style="padding:20px; text-align:center;">Ошибка загрузки данных. Обновите страницу.</div>';
     }
 }
 
@@ -633,7 +722,8 @@ function processSheetData(manRows, manRef) {
 function renderManualGroups() {
     isSearchMode = false;
     manualContainer.innerHTML = "";
-    [...new Set(manualsData.map(m => m.name))].forEach(n => {
+    const uniqueNames = [...new Set(manualsData.map(m => m.name))];
+    uniqueNames.forEach(n => {
         const b = document.createElement("button");
         b.className = "start-btn";
         b.innerHTML = `<i class="fa-solid fa-book-open"></i><span>${n}</span>`;
@@ -652,7 +742,7 @@ function renderManualsByName(name) {
     if (cur?.pdf) {
         const pdfBtn = document.createElement("div");
         pdfBtn.className = "pdf-top-button";
-        pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> MANUAL PDF';
+        pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> СКАЧАТЬ PDF МАНУАЛ';
         pdfBtn.onclick = () => window.open(cur.pdf, '_blank');
         manualContainer.appendChild(pdfBtn);
     }
@@ -688,7 +778,7 @@ function renderSingleManual(manual, container) {
     const img = document.createElement("img");
     img.className = "top-image";
     img.src = manual.image;
-    img.onerror = () => img.src = 'https://via.placeholder.com/400x200?text=No+Image';
+    img.onerror = () => img.src = 'https://via.placeholder.com/800x400?text=Image+Not+Found';
     
     const btns = document.createElement("div");
     btns.className = "buttons-container";
@@ -724,8 +814,9 @@ function createPartButton(container, partNum, label) {
     btn.onclick = (e) => {
         if (e.target.classList.contains('detail-number')) {
             navigator.clipboard.writeText(partNum);
-            e.target.textContent = "Скопировано!";
-            setTimeout(() => e.target.textContent = partNum, 1200);
+            const original = e.target.textContent;
+            e.target.textContent = "✓ Скопировано!";
+            setTimeout(() => e.target.textContent = original, 1200);
             return;
         }
         toggleDetail(btn);
@@ -748,7 +839,8 @@ function toggleDetail(btn) {
     const info = document.createElement("div");
     info.className = "detail-info";
     let html = "";
-    for (let club of ["BB", "KH", "SKYMALL", "STORE"]) {
+    const clubs = ['BB', 'KH', 'SKYMALL', 'STORE'];
+    for (let club of clubs) {
         const c = data?.[club] || { quantity: 0, image: '' };
         const q = c.quantity || 0;
         const hasImg = !!c.image?.trim();
@@ -770,12 +862,13 @@ window.showClubImage = (club, part, e) => {
     e.stopPropagation();
     const img = stockData[part]?.[club]?.image;
     if (img && img.trim()) window.open(img.trim(), '_blank');
-    else alert(`Нет изображения для ${club} / ${part}`);
+    else alert(`Изображение для ${club} / ${part} отсутствует`);
 };
 
 function clearSearch() {
     searchInput.value = "";
     searchResults = [];
+    currentIndex = 0;
     document.querySelectorAll(".search-highlight,.active-highlight").forEach(el => el.classList.remove("search-highlight", "active-highlight"));
     renderManualGroups();
     searchNav.style.display = "none";
@@ -784,6 +877,7 @@ function clearSearch() {
 searchInput.oninput = e => {
     const term = e.target.value.trim();
     searchResults = [];
+    currentIndex = 0;
     document.querySelectorAll(".search-highlight,.active-highlight").forEach(el => el.classList.remove("search-highlight", "active-highlight"));
     if (!term) { renderManualGroups(); searchNav.style.display = "none"; return; }
     isSearchMode = true;
@@ -803,7 +897,7 @@ searchInput.oninput = e => {
             searchResults[0].classList.add("active-highlight");
             searchResults[0].scrollIntoView({ behavior: "smooth", block: "center" });
         }
-    }, 100);
+    }, 150);
 };
 
 function nextResult() {
@@ -848,6 +942,14 @@ window.addEventListener('load', () => {
         google.accounts.id.initialize({ client_id: '328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com', callback: handleCredentialResponse });
     }
 });
+
+// Предотвращение двойного зума на мобильных
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(e) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+}, false);
 </script>
 </body>
 </html>
