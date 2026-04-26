@@ -3,116 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>MANUALS</title>
+<title>MANUALS - Авторасстановка точек</title>
 
 <link rel="icon" type="image/png" href="https://i.postimg.cc/wjGzSY92/1.png">
 <link rel="shortcut icon" href="https://i.postimg.cc/wjGzSY92/1.png" type="image/png">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+<!-- Tesseract.js для распознавания цифр -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://apis.google.com/js/api.js"></script>
 
 <style>
-/* ===== ОТКЛЮЧЕНИЕ DOUBLE TAP ZOOM ===== */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
 html, body {
   touch-action: manipulation;
 }
 
 body {
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  background:#ffffff;
-  color:#1f2937;
-  padding-top:70px;
+  margin: 0;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #ffffff;
+  color: #1f2937;
+  padding-top: 70px;
 }
 
 @media screen and (max-width: 768px) {
   body {
-    padding-bottom: 80px; 
+    padding-bottom: 80px;
   }
 }
 
 header {
-  background:#1f2937;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 20px;
-  position:fixed;
-  top:0; left:0; right:0;
-  box-shadow:0 2px 4px rgba(0,0,0,0.2);
-  z-index:1000;
+  background: #1f2937;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 1000;
 }
 
 .logo img {
-  width:40px;
-  height:40px;
-  cursor:pointer;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
 }
 
 .site-name {
-  flex:1;
-  text-align:center;
-  font-size:18px;
-  font-weight:bold;
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .search-container {
-  position:relative;
+  position: relative;
 }
 
 .search-container input {
-  padding:6px 30px 6px 10px;
-  border-radius:6px;
-  border:none;
-  font-size:16px;
-  width:140px;
+  padding: 6px 30px 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  width: 140px;
 }
 
 .search-container i {
-  position:absolute;
-  right:8px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#1f2937;
-  pointer-events:none;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1f2937;
+  pointer-events: none;
 }
 
 #manualContainer {
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  padding:0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
 
 @media screen and (min-width: 768px) {
-  body {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
+  body { padding-left: 30px; padding-right: 30px; }
 }
 
 @media screen and (min-width: 1200px) {
-  body {
-    padding-left: 50px;
-    padding-right: 50px;
-  }
+  body { padding-left: 50px; padding-right: 50px; }
 }
 
 .block {
-  margin:10px 0;
-  border:1px solid #e5e7eb;
-  border-radius:0;
-  overflow:hidden;
-  background:#fff;
-  box-shadow:0 2px 6px rgba(0,0,0,0.05);
-  transition:0.3s;
+  margin: 10px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: 0.3s;
   position: relative;
 }
 
@@ -122,9 +123,9 @@ header {
   justify-content: center;
   background: #ffffff;
   color: #1f2937;
-  padding: 14px 12px; 
-  margin: 10px 15px 5px 15px; 
-  border-radius: 4px;
+  padding: 14px 12px;
+  margin: 10px 15px 5px 15px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
@@ -132,7 +133,6 @@ header {
   transition: all 0.2s;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   text-transform: uppercase;
-  box-sizing: border-box; 
 }
 
 .pdf-top-button:hover {
@@ -150,14 +150,12 @@ header {
   color: #dc143c;
 }
 
-/* ===== ОБЛАСТЬ НАЗВАНИЯ МАНУАЛА - ИКОНКА ОТКРЫТЬ КАРТИНКУ УБРАНА ===== */
 .manual-label {
-  background:#1f2937;
-  color:white;
-  padding:8px 16px;
-  font-size:16px;
-  font-weight:600;
-  border-radius:6px 6px 0 0;
+  background: #1f2937;
+  color: white;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -172,10 +170,8 @@ header {
   flex: 1;
 }
 
-/* Иконка изображения удалена */
-
 .manual-label-left:hover {
-  background:#2d3a4a;
+  background: #2d3a4a;
   border-radius: 4px;
 }
 
@@ -195,7 +191,7 @@ header {
   color: white;
   cursor: pointer;
   padding: 6px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: all 0.2s;
   font-size: 14px;
   display: flex;
@@ -216,25 +212,24 @@ header {
   color: white;
 }
 
+.auto-recognize-btn {
+  background: #2d6a4f !important;
+}
+
+.auto-recognize-btn:hover {
+  background: #40916c !important;
+}
+
 .top-image {
-  width:100%;
-  height:auto;
-  display:block;
-  border-bottom:1px solid #eee;
-  transition:0.3s;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-bottom: 1px solid #eee;
+  transition: 0.3s;
   position: relative;
   cursor: pointer;
 }
 
-.top-image:hover {
-  opacity:0.9;
-}
-
-.top-image.highlight-image {
-  box-shadow:0 0 0 3px #dc143c inset;
-}
-
-/* Стили для рисования точек на картинке - МАРКЕР В 2 РАЗА МЕНЬШЕ */
 .image-points-canvas {
   position: absolute;
   top: 0;
@@ -243,8 +238,6 @@ header {
   height: 100%;
   pointer-events: none;
   z-index: 5;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
 }
 
 .image-wrapper {
@@ -254,257 +247,155 @@ header {
 }
 
 .buttons-container {
-  display:none;
-  flex-direction:column;
-  margin:0;
-  padding:0;
+  display: none;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 .btn {
-  display:flex;
-  justify-content:space-between;
-  padding:10px 16px;
-  border-top:1px solid #eee;
-  cursor:pointer;
-  color:#1f2937;
-  border-radius:0;
-  margin:0;
-  font-size:16px;
-  font-weight:500;
-  position:relative;
-  transition:0.2s;
-  background:white;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  cursor: pointer;
+  color: #1f2937;
+  font-size: 15px;
+  font-weight: 500;
+  background: white;
+  transition: 0.2s;
 }
 
 .btn.active-detail {
   background: #fef2f2 !important;
-  border-left: 2px solid #dc143c;
-  padding-left: 14px;
-}
-
-.buttons-container .btn:nth-child(odd) {
-  background:#f9f9f9;
-}
-.buttons-container .btn:nth-child(even) {
-  background:#ffffff;
+  border-left: 3px solid #dc143c;
 }
 
 .btn:hover {
-  background:#f0e6e6;
+  background: #f0e6e6;
 }
 
 .detail-info {
-  overflow:hidden;
-  max-height:0;
-  opacity:0;
-  transition:0.4s;
-  background:#fff;
-  border-left: 2px solid #dc143c; 
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: 0.4s;
+  background: #fff;
+  border-left: 2px solid #dc143c;
 }
 
 .detail-info.open {
-  max-height:500px;
-  opacity:1;
+  max-height: 500px;
+  opacity: 1;
 }
 
 .club-row {
-  display:flex;
-  justify-content:space-between;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding:10px 16px;
-  border-top:1px solid #f3f4f6;
-  font-size: 15px;
+  padding: 10px 16px;
+  border-top: 1px solid #f3f4f6;
+  font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 .club-row:hover {
   background: #f5f5f5;
 }
 
-.club-row:active {
-  background: #e8e8e8;
-}
-
 .club-name {
   font-weight: 600;
-  color: #1f2937;
 }
 
-.club-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.club-quantity {
-  font-weight: 500;
-}
-
-.count-zero { 
-  color:#dc143c; 
-  font-weight: bold; 
-}
-
-.count-positive { 
-  color:#16a34a; 
-  font-weight: bold; 
-}
-
-.club-image-icon {
-  color: #dc143c;
-  font-size: 16px;
-  opacity: 0.7;
-}
-
-.club-row.has-image .club-image-icon {
-  opacity: 1;
-}
+.club-quantity.count-zero { color: #dc143c; font-weight: bold; }
+.club-quantity.count-positive { color: #16a34a; font-weight: bold; }
 
 .search-highlight {
-  background:#ffe4e6;
+  background: #ffe4e6;
 }
 
 .active-highlight {
-  background:#ffb6b9;
+  background: #ffb6b9;
 }
 
 .start-btn {
-  display:flex;
-  align-items:center;
-  width:100%;
-  margin:0;
-  padding:18px 20px;
-  background:#1f2937;
-  color:white;
-  font-size:16px;
-  font-weight:600;
-  border:none;
-  border-radius:0;
-  cursor:pointer;
-  transition:0.2s;
-  text-align:left;
-  border-bottom:1px solid #374151;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 18px 20px;
+  background: #1f2937;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid #374151;
 }
 
 .start-btn i {
-  margin-right:15px;
-  font-size:22px;
-  color:white;
-  width:24px;
-  text-align:center;
+  margin-right: 15px;
+  font-size: 22px;
 }
 
-.start-btn span {
-  flex:1;
-}
-
-.start-btn:first-child {
-  border-top:1px solid #374151;
-}
-
-.start-btn:hover { 
-  background:#374151; 
+.start-btn:hover {
+  background: #374151;
 }
 
 .search-nav-bottom {
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  display:none;
-  gap:10px;
-  z-index:1000;
-  background:#1f2937;
-  padding:8px 16px;
-  border-radius:40px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  gap: 10px;
+  z-index: 1000;
+  background: #1f2937;
+  padding: 8px 16px;
+  border-radius: 40px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .search-nav-bottom button {
-  background:transparent;
-  color:white;
-  border:none;
-  width:44px;
-  height:44px;
-  cursor:pointer;
-  font-size:18px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:background 0.2s;
-}
-
-.search-nav-bottom button:hover {
-  background:#374151;
-}
-
-.search-nav-bottom button:active {
-  transform:scale(0.95);
+  background: transparent;
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 50%;
 }
 
 #clearSearchBtn {
-  background:#dc143c;
-  color:white;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  transition:background 0.2s;
+  background: #dc143c;
 }
 
-#clearSearchBtn:hover {
-  background:#b01030;
+.shop-fab-left, .shop-fab-right {
+  position: fixed;
+  bottom: 20px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2001;
+  font-size: 20px;
 }
 
 .shop-fab-left {
-  position: fixed;
-  bottom: 20px;
   left: 20px;
-  width: 54px;
-  height: 54px;
   background: #dc143c;
   color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2001;
-  font-size: 20px;
 }
-
-.shop-fab-left:active { transform: scale(0.95); }
 
 .shop-fab-right {
-  position: fixed;
-  bottom: 20px;
   right: 20px;
-  width: 54px;
-  height: 54px;
   background: #1f2937;
   color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 2001;
-  font-size: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: transform 0.2s;
-}
-
-.shop-fab-right:active { 
-  transform: scale(0.95); 
-}
-
-.shop-fab-right:hover {
-  background: #374151;
 }
 
 .loading-screen {
@@ -563,40 +454,10 @@ header {
   background: white;
   padding: 30px 25px;
   border-radius: 24px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
   text-align: center;
   max-width: 420px;
   width: 100%;
-  border: none;
-}
-
-#login-container h2 {
-  color: #1e293b;
-  margin: 15px 0 5px;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.login-subtitle {
-  color: #64748b;
-  font-size: 13px;
-  margin-bottom: 25px;
-}
-
-.login-icon {
-  width: 50px;
-  height: 50px;
-  background: #f1f5f9;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-}
-
-.login-icon i {
-  font-size: 24px;
-  color: #dc143c;
 }
 
 #user-info {
@@ -605,15 +466,10 @@ header {
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  text-align: left;
   padding: 12px 15px;
-  max-width: 100%;
-  border: none;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
   margin: 10px 15px;
   border-radius: 16px;
-  position: relative;
-  z-index: 999;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
 }
 
 #user-pic {
@@ -621,61 +477,19 @@ header {
   width: 44px;
   height: 44px;
   object-fit: cover;
-  border: none;
 }
 
 .user-details {
   flex-grow: 1;
 }
 
-#user-name {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-#user-email {
-  margin: 0;
-  font-weight: 400;
-  color: #64748b;
-  font-size: 12px;
-  word-break: break-all;
-  max-width: 200px;
-}
-
 #logout-btn {
   background: #f1f5f9;
-  color: #64748b;
   border: none;
   width: 36px;
   height: 36px;
   border-radius: 10px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#logout-btn:hover { 
-  background: #dc143c; 
-  color: white; 
-  transform: scale(1.05);
-}
-
-#main-content {
-  display: none;
-}
-
-.loading-spinner {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(220, 20, 60, 0.2);
-  border-radius: 50%;
-  border-top-color: #dc143c;
-  animation: spin 1s ease-in-out infinite;
 }
 
 .point-toast {
@@ -690,7 +504,6 @@ header {
   font-size: 13px;
   z-index: 2000;
   animation: fadeOut 2s ease forwards;
-  pointer-events: none;
   white-space: nowrap;
 }
 
@@ -708,8 +521,33 @@ header {
   display: none;
   gap: 8px;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   white-space: nowrap;
+}
+
+.ocr-progress {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.9);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 16px;
+  text-align: center;
+  z-index: 3000;
+  font-size: 14px;
+  min-width: 280px;
+}
+
+.ocr-progress .spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #dc143c;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
 }
 
 @keyframes fadeOut {
@@ -731,35 +569,20 @@ header {
 
 <div id="login-section">
   <div id="login-container">
-    <div class="login-icon">
-      <i class="fas fa-shield-halved"></i>
-    </div>
+    <div class="login-icon"><i class="fas fa-shield-halved"></i></div>
     <h2>MANUALS</h2>
     <div class="login-subtitle">Sign in to access</div>
-    <div id="g_id_onload" 
-         data-client_id="328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com" 
-         data-callback="handleCredentialResponse" 
-         data-auto_prompt="false"
-         data-auto_select="false">
-    </div>
-    <div class="g_id_signin" 
-         data-type="standard" 
-         data-shape="pill" 
-         data-theme="outline" 
-         data-text="signin_with" 
-         data-size="large" 
-         data-logo_alignment="left">
-    </div>
+    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-text="signin_with" data-size="large"></div>
   </div>
 </div>
 
 <div id="user-info">
-  <img id="user-pic" src="" alt="Profile">
+  <img id="user-pic" src="">
   <div class="user-details">
     <p id="user-name"></p>
     <p id="user-email"></p>
   </div>
-  <button id="logout-btn" onclick="signOut()"><i class="fas fa-power-off"></i></button>
+  <button id="logout-btn"><i class="fas fa-power-off"></i></button>
 </div>
 
 <div id="main-content">
@@ -773,164 +596,619 @@ header {
       <i class="fa-solid fa-magnifying-glass"></i>
     </div>
   </header>
-
   <div id="manualContainer"></div>
-
   <div class="search-nav-bottom" id="searchNav">
-    <button onclick="prevResult()" title="Предыдущая деталь"><i class="fa-solid fa-chevron-left"></i></button>
-    <button id="clearSearchBtn" onclick="clearSearch()" title="Очистить поиск"><i class="fa-solid fa-times"></i></button>
-    <button onclick="nextResult()" title="Следующая деталь"><i class="fa-solid fa-chevron-right"></i></button>
+    <button onclick="prevResult()"><i class="fa-solid fa-chevron-left"></i></button>
+    <button id="clearSearchBtn"><i class="fa-solid fa-times"></i></button>
+    <button onclick="nextResult()"><i class="fa-solid fa-chevron-right"></i></button>
   </div>
-
-  <div class="shop-fab-left" onclick="openShopSearch()">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </div>
-
-  <div class="shop-fab-right" onclick="renderManualGroups()">
-    <i class="fa-solid fa-arrow-left"></i>
-  </div>
+  <div class="shop-fab-left" onclick="openShopSearch()"><i class="fa-solid fa-magnifying-glass"></i></div>
+  <div class="shop-fab-right" onclick="renderManualGroups()"><i class="fa-solid fa-arrow-left"></i></div>
 </div>
 
 <div class="point-mode-indicator" id="pointModeIndicator">
   <i class="fa-solid fa-plus-circle"></i>
-  <span>Режим добавления точек активен. Нажмите на схему...</span>
+  <span>Режим добавления точек активен</span>
 </div>
 
 <script>
+// ==================== ТОЧКИ И OCR ====================
 let allPoints = {};
 let activePointMode = {};
 
 function loadPointsForManual(manualName) {
-    const saved = localStorage.getItem(`points_${manualName}`);
-    if (saved) {
-        try { allPoints[manualName] = JSON.parse(saved); } catch(e) { allPoints[manualName] = []; }
-    } else { allPoints[manualName] = []; }
-    return allPoints[manualName];
+  const saved = localStorage.getItem(`points_${manualName}`);
+  allPoints[manualName] = saved ? JSON.parse(saved) : [];
+  return allPoints[manualName];
 }
-function savePointsForManual(manualName) { localStorage.setItem(`points_${manualName}`, JSON.stringify(allPoints[manualName] || [])); }
+
+function savePointsForManual(manualName) {
+  localStorage.setItem(`points_${manualName}`, JSON.stringify(allPoints[manualName] || []));
+}
+
 function addPointToManual(manualName, xPercent, yPercent, number) {
-    if (!allPoints[manualName]) allPoints[manualName] = [];
-    allPoints[manualName].push({ x: xPercent, y: yPercent, number: number, createdAt: Date.now() });
-    savePointsForManual(manualName);
-    drawPointsOnImage(manualName);
+  if (!allPoints[manualName]) allPoints[manualName] = [];
+  allPoints[manualName].push({ x: xPercent, y: yPercent, number: number, createdAt: Date.now() });
+  savePointsForManual(manualName);
+  drawPointsOnImage(manualName);
+  updatePointsListInUI(manualName);
 }
+
 function deletePointFromManual(manualName, index) {
-    if (allPoints[manualName] && allPoints[manualName][index]) {
-        allPoints[manualName].splice(index, 1);
-        savePointsForManual(manualName);
-        drawPointsOnImage(manualName);
-        updatePointsListInUI(manualName);
-    }
+  allPoints[manualName].splice(index, 1);
+  savePointsForManual(manualName);
+  drawPointsOnImage(manualName);
+  updatePointsListInUI(manualName);
 }
+
 function drawPointsOnImage(manualName) {
-    const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
-    if (!block) return;
-    const img = block.querySelector('.top-image');
-    const wrapper = block.querySelector('.image-wrapper');
-    if (!wrapper) return;
-    let canvas = wrapper.querySelector('.image-points-canvas');
-    if (!canvas) { canvas = document.createElement('canvas'); canvas.className = 'image-points-canvas'; wrapper.style.position = 'relative'; wrapper.appendChild(canvas); }
-    if (!img.complete || img.naturalWidth === 0) { img.onload = () => drawPointsOnImage(manualName); return; }
-    const rect = wrapper.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
-    canvas.style.width = `${rect.width}px`; canvas.style.height = `${rect.height}px`;
-    const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, rect.width, rect.height);
-    const points = allPoints[manualName] || [];
-    points.forEach(point => {
-        const x = point.x * rect.width, y = point.y * rect.height;
-        let radius = rect.width < 500 ? 5 : (rect.width < 800 ? 6 : 7);
-        ctx.beginPath(); ctx.arc(x, y, radius + 1, 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(220,20,60,0.25)'; ctx.fill();
-        ctx.beginPath(); ctx.arc(x, y, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = '#dc143c'; ctx.fill();
-        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.stroke();
-        const fontSize = Math.max(8, Math.min(12, radius));
-        ctx.font = `bold ${fontSize}px "Segoe UI"`; ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(point.number, x, y);
-    });
+  const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
+  if (!block) return;
+  const img = block.querySelector('.top-image');
+  const wrapper = block.querySelector('.image-wrapper');
+  if (!wrapper) return;
+  
+  let canvas = wrapper.querySelector('.image-points-canvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.className = 'image-points-canvas';
+    wrapper.appendChild(canvas);
+  }
+  
+  if (!img.complete || img.naturalWidth === 0) {
+    img.onload = () => drawPointsOnImage(manualName);
+    return;
+  }
+  
+  const rect = wrapper.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+  
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  
+  const points = allPoints[manualName] || [];
+  points.forEach(point => {
+    const x = point.x * rect.width;
+    const y = point.y * rect.height;
+    let radius = rect.width < 500 ? 5 : 7;
+    
+    ctx.beginPath();
+    ctx.arc(x, y, radius + 1, 0, 2 * Math.PI);
+    ctx.fillStyle = 'rgba(220,20,60,0.25)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = '#dc143c';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    
+    ctx.font = `bold ${Math.max(8, radius)}px "Segoe UI"`;
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(point.number, x, y);
+  });
 }
+
 function updatePointsListInUI(manualName) {
-    const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
-    if (!block) return;
-    const buttonsContainer = block.querySelector('.buttons-container');
-    if (!buttonsContainer) return;
-    const oldPointsSection = block.querySelector('.points-management-section');
-    if (oldPointsSection) oldPointsSection.remove();
-    const points = allPoints[manualName] || [];
-    if (points.length === 0) return;
-    const pointsSection = document.createElement('div'); pointsSection.className = 'points-management-section';
-    pointsSection.style.borderTop = '1px solid #eee'; pointsSection.style.background = '#f8f9fa'; pointsSection.style.padding = '8px 12px';
-    const title = document.createElement('div'); title.style.fontSize = '12px'; title.style.fontWeight = '600'; title.style.color = '#6b7280'; title.style.marginBottom = '8px'; title.innerHTML = '<i class="fa-solid fa-location-dot"></i> Точки на схеме:';
-    pointsSection.appendChild(title);
-    points.forEach((point, idx) => {
-        const row = document.createElement('div'); row.style.display = 'flex'; row.style.justifyContent = 'space-between'; row.style.alignItems = 'center'; row.style.padding = '4px 0'; row.style.fontSize = '13px'; row.style.borderBottom = '1px solid #e5e7eb';
-        const numberSpan = document.createElement('span'); numberSpan.style.color = '#dc143c'; numberSpan.style.fontWeight = '600'; numberSpan.textContent = `№${point.number}`;
-        const deleteBtn = document.createElement('button'); deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; deleteBtn.style.background = 'none'; deleteBtn.style.border = 'none'; deleteBtn.style.color = '#9ca3af'; deleteBtn.style.cursor = 'pointer'; deleteBtn.style.padding = '4px 8px'; deleteBtn.onclick = (e) => { e.stopPropagation(); if(confirm(`Удалить точку №${point.number}?`)) deletePointFromManual(manualName, idx); };
-        row.appendChild(numberSpan); row.appendChild(deleteBtn); pointsSection.appendChild(row);
+  const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
+  if (!block) return;
+  const container = block.querySelector('.buttons-container');
+  if (!container) return;
+  
+  const old = block.querySelector('.points-management-section');
+  if (old) old.remove();
+  
+  const points = allPoints[manualName] || [];
+  if (points.length === 0) return;
+  
+  const section = document.createElement('div');
+  section.className = 'points-management-section';
+  section.style.cssText = 'border-top:1px solid #eee;background:#f8f9fa;padding:8px 12px';
+  section.innerHTML = '<div style="font-size:12px;font-weight:600;margin-bottom:8px"><i class="fa-solid fa-location-dot"></i> Точки на схеме:</div>';
+  
+  points.forEach((p, idx) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #e5e7eb';
+    row.innerHTML = `<span style="color:#dc143c;font-weight:600">№${p.number}</span>
+      <button style="background:none;border:none;color:#9ca3af;cursor:pointer" onclick="deletePointFromManual('${manualName}', ${idx})">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>`;
+    section.appendChild(row);
+  });
+  container.appendChild(section);
+}
+
+// АВТОРАССТАНОВКА ЧЕРЕЗ OCR
+async function autoRecognizeNumbers(manualName) {
+  const block = document.querySelector(`.block[data-manual-name="${manualName}"]`);
+  if (!block) return;
+  const img = block.querySelector('.top-image');
+  if (!img || !img.src) { showToast('❌ Изображение не найдено'); return; }
+  
+  const progress = document.createElement('div');
+  progress.className = 'ocr-progress';
+  progress.innerHTML = '<div class="spinner"></div><div>🔍 Распознавание цифр...<br><small>3-10 секунд</small></div>';
+  document.body.appendChild(progress);
+  
+  try {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const tempImg = new Image();
+    tempImg.crossOrigin = 'Anonymous';
+    
+    await new Promise((resolve, reject) => {
+      tempImg.onload = resolve;
+      tempImg.onerror = reject;
+      tempImg.src = img.src;
     });
-    buttonsContainer.appendChild(pointsSection);
-}
-function togglePointMode(manualName, btnElement) {
-    if (activePointMode[manualName]) {
-        activePointMode[manualName] = false; btnElement.classList.remove('active'); btnElement.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
-        document.getElementById('pointModeIndicator').style.display = 'none'; showPointToast('Режим добавления точек выключен');
-    } else {
-        activePointMode[manualName] = true; btnElement.classList.add('active'); btnElement.innerHTML = '<i class="fa-solid fa-dot-circle"></i>';
-        document.getElementById('pointModeIndicator').style.display = 'flex'; showPointToast('Режим добавления точек включен. Нажмите на схему, чтобы добавить точку');
-        setTimeout(() => { if(activePointMode[manualName]) { activePointMode[manualName] = false; btnElement.classList.remove('active'); btnElement.innerHTML = '<i class="fa-regular fa-dot-circle"></i>'; document.getElementById('pointModeIndicator').style.display = 'none'; showPointToast('Режим добавления точек автоматически выключен'); } }, 30000);
+    
+    canvas.width = tempImg.width;
+    canvas.height = tempImg.height;
+    ctx.drawImage(tempImg, 0, 0);
+    
+    // Улучшение контраста
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+      const val = brightness > 128 ? 255 : 0;
+      data[i] = data[i+1] = data[i+2] = val;
     }
-}
-function showPointToast(message) { const existing = document.querySelector('.point-toast'); if(existing) existing.remove(); const toast = document.createElement('div'); toast.className = 'point-toast'; toast.textContent = message; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2000); }
-function setupImageClickHandler(img, manualName, buttonsContainer) {
-    let wrapper = img.parentElement;
-    if (!wrapper.classList.contains('image-wrapper')) { const newWrapper = document.createElement('div'); newWrapper.className = 'image-wrapper'; img.parentElement.insertBefore(newWrapper, img); newWrapper.appendChild(img); wrapper = newWrapper; }
-    const addPoint = (clientX, clientY) => {
-        if (!activePointMode[manualName]) { showPointToast('⚠️ Сначала включите режим добавления точек'); return false; }
-        const rect = wrapper.getBoundingClientRect(); const percentX = (clientX - rect.left) / rect.width; const percentY = (clientY - rect.top) / rect.height;
-        if (percentX >= 0 && percentX <= 1 && percentY >= 0 && percentY <= 1) {
-            const partNumber = prompt('Введите номер детали:', ''); if(partNumber && partNumber.trim()) { addPointToManual(manualName, percentX, percentY, partNumber.trim()); updatePointsListInUI(manualName); showPointToast(`✓ Точка ${partNumber} добавлена`); } return true;
-        } return false;
-    };
-    img.onclick = (e) => { e.stopPropagation(); if(activePointMode[manualName]) { const rect = wrapper.getBoundingClientRect(); let cx, cy; if(e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; } else { cx = e.clientX; cy = e.clientY; } addPoint(cx, cy); } else { buttonsContainer.style.display = buttonsContainer.style.display === "flex" ? "none" : "flex"; } };
-    img.addEventListener('touchstart', (e) => { if(activePointMode[manualName]) { e.preventDefault(); e.stopPropagation(); const touch = e.touches[0]; addPoint(touch.clientX, touch.clientY); } });
-    if (img.complete) drawPointsOnImage(manualName); else img.onload = () => drawPointsOnImage(manualName);
+    ctx.putImageData(imageData, 0, 0);
+    
+    progress.innerHTML = '<div class="spinner"></div><div>📖 Анализ текста...</div>';
+    
+    const { data: { words } } = await Tesseract.recognize(canvas.toDataURL(), 'eng', {
+      tessedit_char_whitelist: '0123456789',
+      logger: m => {
+        if (m.status === 'recognizing text')
+          progress.innerHTML = `<div class="spinner"></div><div>⚙️ Распознавание: ${Math.round(m.progress * 100)}%</div>`;
+      }
+    });
+    
+    progress.innerHTML = '<div class="spinner"></div><div>📍 Расстановка точек...</div>';
+    
+    const wrapper = block.querySelector('.image-wrapper');
+    const rect = wrapper.getBoundingClientRect();
+    let added = 0;
+    const seen = new Set();
+    
+    for (const word of words || []) {
+      const numbers = word.text.match(/\d{2,6}/g);
+      if (numbers && numbers.length) {
+        const number = numbers[0];
+        if (seen.has(number)) continue;
+        seen.add(number);
+        
+        const bbox = word.bbox;
+        if (bbox) {
+          const centerX = (bbox.x0 + bbox.x1) / 2;
+          const centerY = (bbox.y0 + bbox.y1) / 2;
+          const percentX = centerX / canvas.width;
+          const percentY = centerY / canvas.height;
+          
+          if (percentX >= 0 && percentX <= 1 && percentY >= 0 && percentY <= 1) {
+            addPointToManual(manualName, percentX, percentY, number);
+            added++;
+          }
+        }
+      }
+    }
+    
+    progress.remove();
+    showToast(added > 0 ? `✅ Добавлено ${added} точек` : '⚠️ Цифры не найдены');
+    drawPointsOnImage(manualName);
+    
+  } catch (e) {
+    progress.remove();
+    showToast('❌ Ошибка распознавания');
+    console.error(e);
+  }
 }
 
-// Google API и основные данные
-const AUTH_SPREADSHEET_ID = '1-yiVdZYa6wJdupTiuiHvI_ht3Vu73RUjyCehZqs2cJ4', AUTH_SHEET_NAME = '1', AUTH_API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0', API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0', SPREADSHEET_ID = '1v-R394u6sKzSdvmkh9qsbqhfkNZEi5lIXwo8BdT_lhQ', MANUALS_RANGE = 'MANUALS!A:CC', MANUAL_RANGE = 'MANUAL!A:B', STORE_RANGE = 'STORE!A:D', BB_RANGE = 'BB!A:D', KH_RANGE = 'KH!A:D', SKYMALL_RANGE = 'SKYMALL!A:D', CURRENT_SITE = 'https://smart-bowling.github.io/MANUALS-SMART/';
-let currentUser = null, manualsData = [], stockData = {}, searchResults = [], currentIndex = 0, isSearchMode = false;
-const searchNav = document.getElementById("searchNav"), manualContainer = document.getElementById("manualContainer"), searchInput = document.getElementById("searchInput"), loadingScreen = document.getElementById("loadingScreen"), loginSection = document.getElementById("login-section"), mainContent = document.getElementById("main-content"), userInfo = document.getElementById("user-info");
+function togglePointMode(manualName, btn) {
+  if (activePointMode[manualName]) {
+    activePointMode[manualName] = false;
+    btn.classList.remove('active');
+    btn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
+    document.getElementById('pointModeIndicator').style.display = 'none';
+  } else {
+    activePointMode[manualName] = true;
+    btn.classList.add('active');
+    btn.innerHTML = '<i class="fa-solid fa-dot-circle"></i>';
+    document.getElementById('pointModeIndicator').style.display = 'flex';
+    showToast('Режим добавления точек включен');
+    setTimeout(() => {
+      if (activePointMode[manualName]) togglePointMode(manualName, btn);
+    }, 30000);
+  }
+}
 
-function openShopSearch() { const partNumber = prompt("Введите номер детали:", ""); if(partNumber && partNumber.trim() !== "") { const cleanNumber = partNumber.replace(/-/g, ''); const form = document.createElement('form'); form.method = 'get'; form.action = 'https://shop.bowlingvision.com/catalogue/results.aspx'; form.style.display = 'none'; const input = document.createElement('input'); input.type = 'text'; input.name = 'search'; input.value = cleanNumber; form.appendChild(input); document.body.appendChild(form); form.submit(); setTimeout(() => document.body.removeChild(form), 1000); } }
-function loadSheetsAPI() { return new Promise((resolve, reject) => { gapi.load('client', { callback: () => resolve(), onerror: () => reject('Ошибка загрузки Google API'), timeout: 10000, ontimeout: () => reject('Таймаут') }); }); }
-function handleCredentialResponse(response) { try { const payload = parseJwt(response.credential); currentUser = { email: payload.email.toLowerCase().trim(), name: payload.name, picture: payload.picture }; showLoading(true); initAndCheckEmail(); } catch(e) { console.error(e); showLoading(false); alert('Ошибка аутентификации'); } }
-function showLoading(show) { const loginDiv = document.getElementById('login-container'); if(show) { if(!loginDiv.hasAttribute('data-original')) loginDiv.setAttribute('data-original', loginDiv.innerHTML); loginDiv.innerHTML = '<div style="padding:40px;text-align:center;"><div class="loading-spinner"></div><br><span>Проверка доступа...</span></div>'; } else { if(loginDiv.getAttribute('data-original') && loginSection.style.display !== 'none') { loginDiv.innerHTML = loginDiv.getAttribute('data-original'); if(window.google && google.accounts && google.accounts.id) google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type:'standard', shape:'pill', theme:'outline', text:'signin_with', size:'large', logo_alignment:'left' }); } } }
-async function initAndCheckEmail() { try { await loadSheetsAPI(); await gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] }); await checkEmailInSheet(currentUser.email); } catch(error) { console.error(error); showLoading(false); alert('Ошибка инициализации'); } }
-async function checkEmailInSheet(email) { try { const response = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId: AUTH_SPREADSHEET_ID, range: `${AUTH_SHEET_NAME}!A:Z` }); const rows = response.result.values; if(!rows || rows.length===0) { showLoading(false); alert('Таблица пуста'); return; } let hasAccess=false; for(let i=0;i<rows.length;i++) { if(!rows[i]?.[0]) continue; const rowEmail = rows[i][0].toLowerCase().trim(); if(rowEmail === email) { for(let j=1;j<rows[i].length;j++) { const siteUrl = rows[i][j]?.trim().split('?')[0].split('#')[0] || ''; if(siteUrl === CURRENT_SITE || siteUrl.includes('MANUALS-SMART')) { hasAccess=true; break; } } break; } } if(hasAccess) loginUser(currentUser); else { showLoading(false); alert('Доступ запрещен'); } } catch(error) { console.error(error); showLoading(false); alert('Ошибка доступа'); } }
-function loginUser(payload) { loginSection.style.display='none'; mainContent.style.display='block'; userInfo.style.display='flex'; document.getElementById('user-pic').src=payload.picture; document.getElementById('user-name').textContent=payload.name; document.getElementById('user-email').textContent=payload.email; localStorage.setItem('userLoggedIn','true'); localStorage.setItem('userEmail',payload.email.toLowerCase()); localStorage.setItem('userName',payload.name); localStorage.setItem('userPic',payload.picture); showLoading(false); loadFromGoogleSheets(); }
-function parseJwt(token) { try { const base64Url=token.split('.')[1]; const base64=base64Url.replace(/-/g,'+').replace(/_/g,'/'); const jsonPayload=decodeURIComponent(atob(base64).split('').map(function(c){return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join('')); return JSON.parse(jsonPayload); } catch(e){return{};} }
-function signOut() { localStorage.clear(); sessionStorage.clear(); if(google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); mainContent.style.display='none'; userInfo.style.display='none'; loginSection.style.display='flex'; const loginDiv=document.getElementById('login-container'); if(loginDiv.getAttribute('data-original')) { loginDiv.innerHTML=loginDiv.getAttribute('data-original'); if(window.google && google.accounts && google.accounts.id) google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type:'standard', shape:'pill', theme:'outline', text:'signin_with', size:'large', logo_alignment:'left' }); } }
-async function loadFromGoogleSheets() { try { const manualsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MANUALS_RANGE}?key=${API_KEY}`; const manualsResponse=await fetch(manualsUrl); const manualsData_raw=await manualsResponse.json(); const manualUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MANUAL_RANGE}?key=${API_KEY}`; const manualResponse=await fetch(manualUrl); const manualData_raw=await manualResponse.json(); await loadStockData(); processSheetData(manualsData_raw.values, manualData_raw.values); renderManualGroups(); setTimeout(()=>{loadingScreen.classList.add('fade-out');},500); } catch(error){ console.error(error); loadingScreen.classList.add('fade-out'); manualContainer.innerHTML='<div style="padding:20px;text-align:center;">Ошибка загрузки данных</div>'; } }
-async function loadStockData() { try { const storeUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${STORE_RANGE}?key=${API_KEY}`; const storeResponse=await fetch(storeUrl); const storeData=await storeResponse.json(); const bbUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${BB_RANGE}?key=${API_KEY}`; const bbResponse=await fetch(bbUrl); const bbData=await bbResponse.json(); const khUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${KH_RANGE}?key=${API_KEY}`; const khResponse=await fetch(khUrl); const khData=await khResponse.json(); const skymallUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SKYMALL_RANGE}?key=${API_KEY}`; const skymallResponse=await fetch(skymallUrl); const skymallData=await skymallResponse.json(); stockData={}; const process=(rows,sheet)=>{ if(!rows) return; for(let i=1;i<rows.length;i++){ const row=rows[i]; if(!row[0])continue; const partNumber=row[0].trim(); const qty=parseInt(row[1])||0; const img=row[3]||''; if(!stockData[partNumber]) stockData[partNumber]={}; stockData[partNumber][sheet]={quantity:qty, location:row[2]||'', image:img}; } }; process(storeData.values,'STORE'); process(bbData.values,'BB'); process(khData.values,'KH'); process(skymallData.values,'SKYMALL'); } catch(e){ console.error(e); } }
-function processSheetData(manualsRows, manualRows) { manualsData=[]; if(manualsRows) for(let i=1;i<manualsRows.length;i++){ const row=manualsRows[i]; if(!row[0]) continue; const parts=[]; for(let j=2;j<row.length;j++) if(row[j] && row[j].trim()!=='') parts.push(row[j].trim()); manualsData.push({ name:row[0], image:row[1]||'', parts:parts }); } if(manualRows) for(let i=1;i<manualRows.length;i++){ const row=manualRows[i]; if(!row[0]) continue; const manual=manualsData.find(m=>m.name===row[0]); if(manual) manual.pdf=row[1]||''; } }
-function extractSingleCode(partString){ const regex=/^\(([^)]+)\)\s+([\d-]+)$/; const match=partString.match(regex); return match?{code:match[1].trim(), number:match[2].trim()}:null; }
-function isCompositePart(partString){ const matches=partString.match(/\([^)]+\)\s+[\d-]+/g); return matches && matches.length>1; }
-function parseCompositeParts(partString){ const result=[]; const regex=/\(([^)]+)\)\s+([\d-]+)/g; let match; while((match=regex.exec(partString))!==null) result.push({code:match[1].trim(), number:match[2].trim()}); return result; }
-function renderManualGroups(){ isSearchMode=false; manualContainer.innerHTML=""; const uniqueNames=[...new Set(manualsData.map(m=>m.name))]; uniqueNames.forEach(name=>{ const b=document.createElement("button"); b.className="start-btn"; const icon=document.createElement("i"); icon.className="fa-solid fa-book-open"; const span=document.createElement("span"); span.textContent=name; b.appendChild(icon); b.appendChild(span); b.onclick=()=>renderManualsByName(name); manualContainer.appendChild(b); }); searchInput.value=""; searchResults=[]; currentIndex=0; searchNav.style.display="none"; }
-function renderManualsByName(name){ isSearchMode=false; manualContainer.innerHTML=""; const currentManual=manualsData.find(m=>m.name===name); const pdfButton=document.createElement("div"); pdfButton.className="pdf-top-button"; pdfButton.innerHTML='<i class="fa-solid fa-file-pdf"></i> MANUAL PDF'; pdfButton.onclick=()=>{ if(currentManual && currentManual.pdf) window.open(currentManual.pdf,'_blank'); else alert('PDF не найден'); }; manualContainer.appendChild(pdfButton); manualsData.filter(m=>m.name===name).forEach(manual=>{ renderSingleManual(manual, manualContainer); }); }
-function renderSingleManual(manual, container, hidePdfButton=false){ const block=document.createElement("div"); block.className="block"; block.dataset.manualName=manual.name; loadPointsForManual(manual.name); const labelDiv=document.createElement("div"); labelDiv.className="manual-label"; const leftPart=document.createElement("div"); leftPart.className="manual-label-left"; leftPart.innerHTML=manual.name; leftPart.onclick=(e)=>{ e.stopPropagation(); if(manual.image && manual.image.trim()!=='') window.open(manual.image,'_blank'); else alert('Изображение отсутствует'); }; const actionButtons=document.createElement("div"); actionButtons.className="manual-label-actions"; const pointModeBtn=document.createElement("button"); pointModeBtn.className="point-mode-btn"; pointModeBtn.innerHTML='<i class="fa-regular fa-dot-circle"></i>'; pointModeBtn.title="Включить режим добавления точек"; pointModeBtn.onclick=(e)=>{ e.stopPropagation(); togglePointMode(manual.name, pointModeBtn); }; actionButtons.appendChild(pointModeBtn); labelDiv.appendChild(leftPart); labelDiv.appendChild(actionButtons); const img=document.createElement("img"); img.className="top-image"; img.src=manual.image; img.onerror=()=>{ img.src='https://via.placeholder.com/400x200?text=No+Image'; }; const buttonsContainer=document.createElement("div"); buttonsContainer.className="buttons-container"; block.appendChild(labelDiv); block.appendChild(img); block.appendChild(buttonsContainer); manual.parts.forEach((part,index)=>{ const singleCode=extractSingleCode(part); if(singleCode) createPartButton(buttonsContainer, singleCode.number, singleCode.code); else if(isCompositePart(part)) parseCompositeParts(part).forEach(p=>createPartButton(buttonsContainer, p.number, p.code)); else createPartButton(buttonsContainer, part, (index+1).toString()); }); container.appendChild(block); setupImageClickHandler(img, manual.name, buttonsContainer); if(img.complete){ drawPointsOnImage(manual.name); updatePointsListInUI(manual.name); }else{ img.onload=()=>{ drawPointsOnImage(manual.name); updatePointsListInUI(manual.name); }; } }
-function createPartButton(container, partNumber, label){ const btn=document.createElement("div"); btn.className="btn"; btn.innerHTML=`<span>${label}</span><span class="detail-number">${partNumber}</span>`; btn.onclick=(e)=>{ const targetDetail=e.target.closest(".detail-number"); if(targetDetail){ e.stopPropagation(); const originalText=targetDetail.textContent; navigator.clipboard.writeText(originalText).then(()=>{ targetDetail.textContent="Скопировано!"; setTimeout(()=>targetDetail.textContent=originalText,1200); }); return; } const nextEl=btn.nextElementSibling; if(nextEl && nextEl.classList.contains("detail-info")){ nextEl.remove(); btn.classList.remove("active-detail"); return; } const container=btn.parentElement; container.querySelectorAll(".detail-info").forEach(el=>el.remove()); container.querySelectorAll(".btn").forEach(b=>b.classList.remove("active-detail")); const part=btn.querySelector(".detail-number").textContent; const partData=stockData[part]; const info=document.createElement("div"); info.className="detail-info"; let clubDataHtml=""; ["BB","KH","SKYMALL","STORE"].forEach(club=>{ const clubInfo=partData?.[club]||{quantity:0,location:'',image:''}; const count=clubInfo.quantity||0; const hasImage=clubInfo.image && clubInfo.image.trim()!==''; clubDataHtml+=`<div class="club-row ${hasImage?'has-image':''}" onclick="handleClubClick('${club}','${part}',event)" data-club="${club}" data-part="${part}"><span class="club-name">${club}</span><div class="club-info"><span class="club-quantity ${count===0?'count-zero':'count-positive'}">${count} шт.</span>${hasImage?'<i class="fa-solid fa-image club-image-icon" title="Нажмите чтобы увидеть изображение"></i>':''}</div></div>`; }); info.innerHTML=clubDataHtml; btn.after(info); btn.classList.add("active-detail"); setTimeout(()=>info.classList.add("open"),10); }; container.appendChild(btn); }
-function handleClubClick(club, part, event){ event.stopPropagation(); const partData=stockData[part]; if(partData && partData[club] && partData[club].image && partData[club].image.trim()!=='') window.open(partData[club].image,'_blank'); }
-function clearSearch(){ searchInput.value=""; searchResults=[]; currentIndex=0; document.querySelectorAll(".search-highlight,.active-highlight").forEach(el=>el.classList.remove("search-highlight","active-highlight")); renderManualGroups(); searchNav.style.display="none"; }
-searchInput.oninput=e=>{ const searchTerm=e.target.value.trim(); searchResults=[]; currentIndex=0; document.querySelectorAll(".search-highlight,.active-highlight").forEach(el=>el.classList.remove("search-highlight","active-highlight")); if(!searchTerm){ renderManualGroups(); searchNav.style.display="none"; return; } isSearchMode=true; searchNav.style.display="flex"; manualContainer.innerHTML=""; manualsData.forEach(manual=>{ const hasMatch=manual.parts.some(part=>{ const sc=extractSingleCode(part); if(sc && sc.number.includes(searchTerm)) return true; if(isCompositePart(part)) return parseCompositeParts(part).some(p=>p.number.includes(searchTerm)); return part.includes(searchTerm); }); if(hasMatch) renderSingleManual(manual, manualContainer, true); }); setTimeout(()=>{ document.querySelectorAll(".detail-number").forEach(el=>{ if(el.textContent.includes(searchTerm)){ el.classList.add("search-highlight"); searchResults.push(el); } }); if(searchResults[0]){ searchResults[0].classList.add("active-highlight"); searchResults[0].scrollIntoView({behavior:"smooth", block:"center"}); } },100); };
-function nextResult(){ if(!searchResults.length) return; if(searchResults[currentIndex]) searchResults[currentIndex].classList.remove("active-highlight"); currentIndex=(currentIndex+1)%searchResults.length; if(searchResults[currentIndex]){ searchResults[currentIndex].classList.add("active-highlight"); searchResults[currentIndex].scrollIntoView({behavior:"smooth", block:"center"}); } }
-function prevResult(){ if(!searchResults.length) return; if(searchResults[currentIndex]) searchResults[currentIndex].classList.remove("active-highlight"); currentIndex=(currentIndex-1+searchResults.length)%searchResults.length; if(searchResults[currentIndex]){ searchResults[currentIndex].classList.add("active-highlight"); searchResults[currentIndex].scrollIntoView({behavior:"smooth", block:"center"}); } }
-window.addEventListener('load',function(){ const isLoggedIn=localStorage.getItem('userLoggedIn')==='true'; const email=localStorage.getItem('userEmail'); const name=localStorage.getItem('userName'); const pic=localStorage.getItem('userPic'); if(isLoggedIn && email){ loginSection.style.display='none'; mainContent.style.display='block'; userInfo.style.display='flex'; document.getElementById('user-name').textContent=name||'User'; document.getElementById('user-email').textContent=email; if(pic) document.getElementById('user-pic').src=pic; currentUser={email:email,name:name,picture:pic}; showLoading(true); loadSheetsAPI().then(()=>gapi.client.init({apiKey:AUTH_API_KEY,discoveryDocs:['https://sheets.googleapis.com/$discovery/rest?version=v4']})).then(()=>checkEmailInSheet(email)).catch(()=>{ signOut(); }); } else { loginSection.style.display='flex'; mainContent.style.display='none'; userInfo.style.display='none'; const loginDiv=document.getElementById('login-container'); if(loginDiv.getAttribute('data-original')) loginDiv.innerHTML=loginDiv.getAttribute('data-original'); setTimeout(()=>{ loadingScreen.classList.add('fade-out'); },500); } });
-window.onload=function(){ if(google && google.accounts && google.accounts.id){ google.accounts.id.initialize({ client_id:'328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com', callback:handleCredentialResponse }); google.accounts.id.renderButton(document.querySelector('.g_id_signin'),{ type:'standard', shape:'pill', theme:'outline', text:'signin_with', size:'large', logo_alignment:'left' }); } };
+function showToast(msg) {
+  const existing = document.querySelector('.point-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'point-toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+function setupImageClickHandler(img, manualName, container) {
+  let wrapper = img.parentElement;
+  if (!wrapper.classList.contains('image-wrapper')) {
+    const newWrapper = document.createElement('div');
+    newWrapper.className = 'image-wrapper';
+    img.parentElement.insertBefore(newWrapper, img);
+    newWrapper.appendChild(img);
+    wrapper = newWrapper;
+  }
+  
+  const handleClick = (clientX, clientY) => {
+    if (!activePointMode[manualName]) {
+      showToast('Сначала включите режим добавления точек');
+      return;
+    }
+    const rect = wrapper.getBoundingClientRect();
+    const x = (clientX - rect.left) / rect.width;
+    const y = (clientY - rect.top) / rect.height;
+    if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+      const num = prompt('Номер детали:');
+      if (num && num.trim()) {
+        addPointToManual(manualName, x, y, num.trim());
+        showToast(`✓ Точка ${num} добавлена`);
+      }
+    }
+  };
+  
+  img.onclick = (e) => {
+    if (activePointMode[manualName]) {
+      const cx = e.clientX, cy = e.clientY;
+      handleClick(cx, cy);
+    } else {
+      container.style.display = container.style.display === 'flex' ? 'none' : 'flex';
+    }
+  };
+  
+  img.addEventListener('touchstart', (e) => {
+    if (activePointMode[manualName]) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      handleClick(touch.clientX, touch.clientY);
+    }
+  });
+  
+  if (img.complete) drawPointsOnImage(manualName);
+  else img.onload = () => drawPointsOnImage(manualName);
+}
+
+// ==================== GOOGLE SHEETS ====================
+const AUTH_SPREADSHEET_ID = '1-yiVdZYa6wJdupTiuiHvI_ht3Vu73RUjyCehZqs2cJ4';
+const AUTH_API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
+const API_KEY = 'AIzaSyAXL0Hsfxy-g-AgYhnivj4x9gCB2rrtF-0';
+const SPREADSHEET_ID = '1v-R394u6sKzSdvmkh9qsbqhfkNZEi5lIXwo8BdT_lhQ';
+const CURRENT_SITE = 'https://smart-bowling.github.io/MANUALS-SMART/';
+
+let currentUser = null;
+let manualsData = [];
+let stockData = {};
+let searchResults = [];
+let currentIndex = 0;
+
+const searchNav = document.getElementById('searchNav');
+const manualContainer = document.getElementById('manualContainer');
+const searchInput = document.getElementById('searchInput');
+const loadingScreen = document.getElementById('loadingScreen');
+const loginSection = document.getElementById('login-section');
+const mainContent = document.getElementById('main-content');
+const userInfo = document.getElementById('user-info');
+
+function openShopSearch() {
+  const part = prompt('Введите номер детали:');
+  if (part && part.trim()) {
+    const form = document.createElement('form');
+    form.method = 'get';
+    form.action = 'https://shop.bowlingvision.com/catalogue/results.aspx';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'search';
+    input.value = part.replace(/-/g, '');
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(() => form.remove(), 1000);
+  }
+}
+
+function handleCredentialResponse(response) {
+  try {
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    currentUser = { email: payload.email.toLowerCase(), name: payload.name, picture: payload.picture };
+    checkEmailInSheet(currentUser.email);
+  } catch(e) { alert('Ошибка входа'); }
+}
+
+async function checkEmailInSheet(email) {
+  await gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] });
+  const res = await gapi.client.sheets.spreadsheets.values.get({ spreadsheetId: AUTH_SPREADSHEET_ID, range: '1!A:Z' });
+  const rows = res.result.values || [];
+  let hasAccess = false;
+  for (const row of rows) {
+    if (row[0]?.toLowerCase() === email) {
+      for (let j = 1; j < row.length; j++) {
+        if (row[j]?.includes('MANUALS-SMART') || row[j] === CURRENT_SITE) hasAccess = true;
+      }
+      break;
+    }
+  }
+  if (hasAccess) {
+    loginSection.style.display = 'none';
+    mainContent.style.display = 'block';
+    userInfo.style.display = 'flex';
+    document.getElementById('user-pic').src = currentUser.picture;
+    document.getElementById('user-name').textContent = currentUser.name;
+    document.getElementById('user-email').textContent = currentUser.email;
+    localStorage.setItem('userLoggedIn', 'true');
+    loadFromGoogleSheets();
+  } else {
+    alert('Доступ запрещен');
+    signOut();
+  }
+}
+
+function signOut() {
+  localStorage.clear();
+  loginSection.style.display = 'flex';
+  mainContent.style.display = 'none';
+  userInfo.style.display = 'none';
+  if (google?.accounts?.id) google.accounts.id.disableAutoSelect();
+}
+
+async function loadFromGoogleSheets() {
+  try {
+    const manualsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/MANUALS!A:CC?key=${API_KEY}`;
+    const manualUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/MANUAL!A:B?key=${API_KEY}`;
+    const [manualsRes, manualRes] = await Promise.all([fetch(manualsUrl), fetch(manualUrl)]);
+    const manualsData_raw = await manualsRes.json();
+    const manualData_raw = await manualRes.json();
+    await loadStockData();
+    processSheetData(manualsData_raw.values, manualData_raw.values);
+    renderManualGroups();
+    setTimeout(() => loadingScreen.classList.add('fade-out'), 500);
+  } catch(e) { loadingScreen.classList.add('fade-out'); manualContainer.innerHTML = '<div style="padding:20px">Ошибка загрузки</div>'; }
+}
+
+async function loadStockData() {
+  const sheets = ['STORE', 'BB', 'KH', 'SKYMALL'];
+  for (const sheet of sheets) {
+    try {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheet}!A:D?key=${API_KEY}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      for (let i = 1; i < (data.values || []).length; i++) {
+        const row = data.values[i];
+        if (!row[0]) continue;
+        if (!stockData[row[0]]) stockData[row[0]] = {};
+        stockData[row[0]][sheet] = { quantity: parseInt(row[1]) || 0, location: row[2] || '', image: row[3] || '' };
+      }
+    } catch(e) {}
+  }
+}
+
+function processSheetData(manualsRows, manualRows) {
+  manualsData = [];
+  for (let i = 1; manualsRows && i < manualsRows.length; i++) {
+    const row = manualsRows[i];
+    if (!row[0]) continue;
+    const parts = [];
+    for (let j = 2; j < row.length; j++) if (row[j]?.trim()) parts.push(row[j].trim());
+    manualsData.push({ name: row[0], image: row[1] || '', parts, pdf: '' });
+  }
+  for (let i = 1; manualRows && i < manualRows.length; i++) {
+    const row = manualRows[i];
+    const m = manualsData.find(m => m.name === row[0]);
+    if (m) m.pdf = row[1] || '';
+  }
+}
+
+function extractSingleCode(s) {
+  const m = s.match(/^\(([^)]+)\)\s+([\d-]+)$/);
+  return m ? { code: m[1], number: m[2] } : null;
+}
+
+function isCompositePart(s) { return (s.match(/\([^)]+\)\s+[\d-]+/g) || []).length > 1; }
+function parseCompositeParts(s) {
+  const res = [];
+  const regex = /\(([^)]+)\)\s+([\d-]+)/g;
+  let m;
+  while ((m = regex.exec(s)) !== null) res.push({ code: m[1], number: m[2] });
+  return res;
+}
+
+function renderManualGroups() {
+  manualContainer.innerHTML = '';
+  const names = [...new Set(manualsData.map(m => m.name))];
+  names.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'start-btn';
+    btn.innerHTML = `<i class="fa-solid fa-book-open"></i><span>${name}</span>`;
+    btn.onclick = () => renderManualsByName(name);
+    manualContainer.appendChild(btn);
+  });
+  searchInput.value = '';
+  searchNav.style.display = 'none';
+}
+
+function renderManualsByName(name) {
+  manualContainer.innerHTML = '';
+  const current = manualsData.find(m => m.name === name);
+  const pdfBtn = document.createElement('div');
+  pdfBtn.className = 'pdf-top-button';
+  pdfBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> MANUAL PDF';
+  pdfBtn.onclick = () => current?.pdf ? window.open(current.pdf) : alert('PDF не найден');
+  manualContainer.appendChild(pdfBtn);
+  manualsData.filter(m => m.name === name).forEach(m => renderSingleManual(m, manualContainer));
+}
+
+function renderSingleManual(manual, container) {
+  const block = document.createElement('div');
+  block.className = 'block';
+  block.dataset.manualName = manual.name;
+  loadPointsForManual(manual.name);
+  
+  const label = document.createElement('div');
+  label.className = 'manual-label';
+  const left = document.createElement('div');
+  left.className = 'manual-label-left';
+  left.innerHTML = manual.name;
+  left.onclick = () => manual.image ? window.open(manual.image) : alert('Нет изображения');
+  
+  const actions = document.createElement('div');
+  actions.className = 'manual-label-actions';
+  
+  const autoBtn = document.createElement('button');
+  autoBtn.className = 'auto-recognize-btn';
+  autoBtn.innerHTML = '<i class="fa-solid fa-wand-magic"></i> Авто';
+  autoBtn.title = 'Автоматически распознать цифры и расставить точки';
+  autoBtn.onclick = (e) => { e.stopPropagation(); autoRecognizeNumbers(manual.name); };
+  
+  const pointBtn = document.createElement('button');
+  pointBtn.className = 'point-mode-btn';
+  pointBtn.innerHTML = '<i class="fa-regular fa-dot-circle"></i>';
+  pointBtn.title = 'Включить режим добавления точек';
+  pointBtn.onclick = (e) => { e.stopPropagation(); togglePointMode(manual.name, pointBtn); };
+  
+  actions.appendChild(autoBtn);
+  actions.appendChild(pointBtn);
+  label.appendChild(left);
+  label.appendChild(actions);
+  
+  const img = document.createElement('img');
+  img.className = 'top-image';
+  img.src = manual.image;
+  img.onerror = () => img.src = 'https://via.placeholder.com/400x200?text=No+Image';
+  
+  const btnContainer = document.createElement('div');
+  btnContainer.className = 'buttons-container';
+  
+  manual.parts.forEach((part, idx) => {
+    const code = extractSingleCode(part);
+    if (code) createPartButton(btnContainer, code.number, code.code);
+    else if (isCompositePart(part)) parseCompositeParts(part).forEach(p => createPartButton(btnContainer, p.number, p.code));
+    else createPartButton(btnContainer, part, (idx+1).toString());
+  });
+  
+  block.appendChild(label);
+  block.appendChild(img);
+  block.appendChild(btnContainer);
+  container.appendChild(block);
+  setupImageClickHandler(img, manual.name, btnContainer);
+}
+
+function createPartButton(container, partNumber, label) {
+  const btn = document.createElement('div');
+  btn.className = 'btn';
+  btn.innerHTML = `<span>${label}</span><span class="detail-number">${partNumber}</span>`;
+  btn.onclick = (e) => {
+    if (e.target.closest('.detail-number')) {
+      const num = e.target.closest('.detail-number').textContent;
+      navigator.clipboard.writeText(num);
+      showToast(`Скопировано: ${num}`);
+      return;
+    }
+    const detail = btn.nextElementSibling;
+    if (detail?.classList.contains('detail-info')) { detail.remove(); btn.classList.remove('active-detail'); return; }
+    document.querySelectorAll('.detail-info').forEach(el => el.remove());
+    document.querySelectorAll('.btn').forEach(b => b.classList.remove('active-detail'));
+    
+    const data = stockData[partNumber] || {};
+    const info = document.createElement('div');
+    info.className = 'detail-info';
+    let html = '';
+    ['BB', 'KH', 'SKYMALL', 'STORE'].forEach(club => {
+      const clubData = data[club] || { quantity: 0, image: '' };
+      const hasImg = clubData.image && clubData.image.trim();
+      html += `<div class="club-row" onclick="if('${hasImg}') window.open('${clubData.image}', '_blank')">
+        <span class="club-name">${club}</span>
+        <span class="club-quantity ${clubData.quantity === 0 ? 'count-zero' : 'count-positive'}">${clubData.quantity} шт.</span>
+      </div>`;
+    });
+    info.innerHTML = html;
+    btn.after(info);
+    btn.classList.add('active-detail');
+    setTimeout(() => info.classList.add('open'), 10);
+  };
+  container.appendChild(btn);
+}
+
+function clearSearch() {
+  searchInput.value = '';
+  searchResults = [];
+  renderManualGroups();
+  searchNav.style.display = 'none';
+}
+
+function nextResult() { if (searchResults.length) { currentIndex = (currentIndex + 1) % searchResults.length; scrollToResult(); } }
+function prevResult() { if (searchResults.length) { currentIndex = (currentIndex - 1 + searchResults.length) % searchResults.length; scrollToResult(); } }
+function scrollToResult() { searchResults[currentIndex]?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+
+searchInput.oninput = (e) => {
+  const term = e.target.value.trim();
+  if (!term) { renderManualGroups(); searchNav.style.display = 'none'; return; }
+  searchNav.style.display = 'flex';
+  manualContainer.innerHTML = '';
+  manualsData.forEach(m => {
+    const match = m.parts.some(p => {
+      const sc = extractSingleCode(p);
+      if (sc && sc.number.includes(term)) return true;
+      if (isCompositePart(p)) return parseCompositeParts(p).some(pp => pp.number.includes(term));
+      return p.includes(term);
+    });
+    if (match) renderSingleManual(m, manualContainer);
+  });
+  setTimeout(() => {
+    searchResults = [...document.querySelectorAll('.detail-number')].filter(el => el.textContent.includes(term));
+    searchResults.forEach(el => el.classList.add('search-highlight'));
+    if (searchResults[0]) searchResults[0].classList.add('active-highlight');
+  }, 100);
+};
+
+document.getElementById('logout-btn').onclick = signOut;
+document.getElementById('clearSearchBtn').onclick = clearSearch;
+
+window.onload = () => {
+  const logged = localStorage.getItem('userLoggedIn') === 'true';
+  if (logged) {
+    loginSection.style.display = 'none';
+    mainContent.style.display = 'block';
+    userInfo.style.display = 'flex';
+    document.getElementById('user-name').textContent = localStorage.getItem('userName') || 'User';
+    document.getElementById('user-email').textContent = localStorage.getItem('userEmail') || '';
+    if (localStorage.getItem('userPic')) document.getElementById('user-pic').src = localStorage.getItem('userPic');
+    loadSheetsAPI().then(() => gapi.client.init({ apiKey: AUTH_API_KEY, discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'] })).then(() => loadFromGoogleSheets());
+  } else {
+    loginSection.style.display = 'flex';
+    mainContent.style.display = 'none';
+    userInfo.style.display = 'none';
+    setTimeout(() => loadingScreen.classList.add('fade-out'), 500);
+    if (google?.accounts?.id) {
+      google.accounts.id.initialize({ client_id: '328749588235-bgfeukqogpoq2ha65j7j0vk840hctiaq.apps.googleusercontent.com', callback: handleCredentialResponse });
+      google.accounts.id.renderButton(document.querySelector('.g_id_signin'), { type: 'standard', shape: 'pill', theme: 'outline', text: 'signin_with', size: 'large' });
+    }
+  }
+};
+
+function loadSheetsAPI() {
+  return new Promise((resolve) => gapi.load('client', { callback: resolve }));
+}
 </script>
 </body>
 </html>
