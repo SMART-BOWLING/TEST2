@@ -2,56 +2,60 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Sandbox</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Segoe UI, sans-serif;
-        background: #0f0f0f;
-        height: 100vh;
-        overflow: hidden;
-    }
+html,
+body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#0f0f0f;
+    font-family:Segoe UI,sans-serif;
 
-    /* круглая кнопка */
-    #toggle {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: none;
-        background: #dc143c;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        z-index: 10;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
+    /* отключение выделения и зума */
+    touch-action:manipulation;
+    -webkit-text-size-adjust:100%;
+}
 
-    /* редактор */
-    textarea {
-        width: 100%;
-        height: 100vh;
-        background: #1f1f1f;
-        color: white;
-        border: none;
-        outline: none;
-        padding: 20px;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
+#toggle{
+    position:fixed;
+    top:15px;
+    right:15px;
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:50%;
+    background:#dc143c;
+    color:#fff;
+    font-size:18px;
+    z-index:1000;
+}
 
-    /* preview */
-    iframe {
-        width: 100%;
-        height: 100vh;
-        border: none;
-        display: none;
-        background: white;
-    }
+textarea{
+    width:100%;
+    height:100vh;
+    border:none;
+    outline:none;
+    resize:none;
+    box-sizing:border-box;
+    padding:20px;
+    background:#1f1f1f;
+    color:#fff;
+    font-size:16px; /* важно: меньше 16px на iPhone вызывает зум */
+    font-family:monospace;
+}
+
+iframe{
+    width:100%;
+    height:100vh;
+    border:none;
+    display:none;
+    background:#fff;
+}
 </style>
 </head>
 
@@ -59,25 +63,7 @@
 
 <button id="toggle">▶</button>
 
-<textarea id="code">
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-    padding: 50px;
-}
-h1 { color: red; }
-</style>
-</head>
-<body>
-<h1>Привет</h1>
-<p>HTML Sandbox</p>
-</body>
-</html>
-</textarea>
+<textarea id="code" spellcheck="false"></textarea>
 
 <iframe id="preview"></iframe>
 
@@ -88,26 +74,27 @@ const preview = document.getElementById("preview");
 
 let mode = "edit";
 
-function update() {
+function update(){
     preview.srcdoc = code.value;
 }
 
 code.addEventListener("input", update);
-update();
 
 btn.addEventListener("click", () => {
-    if (mode === "edit") {
+
+    if(mode === "edit"){
         mode = "preview";
         code.style.display = "none";
         preview.style.display = "block";
         btn.textContent = "✎";
         update();
-    } else {
+    }else{
         mode = "edit";
         code.style.display = "block";
         preview.style.display = "none";
         btn.textContent = "▶";
     }
+
 });
 </script>
 
