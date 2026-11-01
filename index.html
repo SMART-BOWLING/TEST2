@@ -6,6 +6,9 @@
 
 <title>Sandbox</title>
 
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <style>
 html,
 body{
@@ -33,6 +36,28 @@ body{
     color:#fff;
     font-size:18px;
     z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+#clear{
+    position:fixed;
+    top:15px;
+    right:75px;
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:50%;
+    background:#444;
+    color:#fff;
+    font-size:18px;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
 }
 
 textarea{
@@ -43,6 +68,7 @@ textarea{
     resize:none;
     box-sizing:border-box;
     padding:20px;
+    padding-top:80px; /* чтобы текст не уходил под кнопки */
     background:#1f1f1f;
     color:#fff;
     font-size:16px; /* важно: меньше 16px на iPhone вызывает зум */
@@ -61,7 +87,13 @@ iframe{
 
 <body>
 
-<button id="toggle">▶</button>
+<button id="toggle" aria-label="Переключить режим">
+    <i class="fa-solid fa-play" id="toggleIcon"></i>
+</button>
+
+<button id="clear" aria-label="Очистить код">
+    <i class="fa-solid fa-trash"></i>
+</button>
 
 <textarea id="code" spellcheck="false"></textarea>
 
@@ -69,6 +101,8 @@ iframe{
 
 <script>
 const btn = document.getElementById("toggle");
+const toggleIcon = document.getElementById("toggleIcon");
+const clearBtn = document.getElementById("clear");
 const code = document.getElementById("code");
 const preview = document.getElementById("preview");
 
@@ -86,15 +120,21 @@ btn.addEventListener("click", () => {
         mode = "preview";
         code.style.display = "none";
         preview.style.display = "block";
-        btn.textContent = "✎";
+        toggleIcon.className = "fa-solid fa-pen";
         update();
     }else{
         mode = "edit";
         code.style.display = "block";
         preview.style.display = "none";
-        btn.textContent = "▶";
+        toggleIcon.className = "fa-solid fa-play";
     }
 
+});
+
+clearBtn.addEventListener("click", () => {
+    code.value = "";
+    update();
+    code.focus();
 });
 </script>
 
